@@ -28,9 +28,12 @@ SITE = {
     "baseline": "Conseil · Fiscalité · Entreprises",
     "signature": "Accompagner · Analyser · Préparer · Coordonner",
     "domaine": "https://www.ccf-conseil.fr",
-    "telephone": "01 23 45 67 89",          # À REMPLACER
-    "telephone_lien": "+33123456789",       # À REMPLACER
     "email": "contact@ccf-conseil.fr",      # À REMPLACER
+    # Téléphone : laisser vide tant qu'il n'est pas communiqué.
+    # Dès qu'il est renseigné, il réapparaît partout (en-tête, pied de page,
+    # barre mobile, données structurées) sans autre modification.
+    "telephone": "",
+    "telephone_lien": "",
     "adresse": "Adresse à compléter",       # À REMPLACER
     "code_postal": "00000",                 # À REMPLACER
     "ville": "Ville à compléter",           # À REMPLACER
@@ -78,18 +81,41 @@ def icon(name, cls="", w=1.4):
             f'aria-hidden="true" focusable="false">{I[name]}</svg>')
 
 
+# Reprend les entrées de la maquette : Cabinet, Expertises, Méthode, Procédures, Contact.
+# « Ressources » reste accessible par le pied de page et le plan du site tant que
+# les fiches ne sont pas rédigées : une entrée de menu qui mène à une page vide
+# dessert le référencement autant que la crédibilité.
 NAV_ITEMS = [
     ("cabinet.html", "Cabinet"),
     ("expertises/index.html", "Expertises"),
     ("methode.html", "Méthode"),
-    ("procedure-fiscale.html", "Procédure"),
-    ("ressources/index.html", "Ressources"),
+    ("procedure-fiscale.html", "Procédures"),
     ("contact.html", "Contact"),
 ]
 
 
 def rel(path, root):
     return root + path
+
+
+def a_tel():
+    """Le téléphone n'est affiché que s'il est renseigné dans SITE."""
+    return bool(SITE["telephone"].strip())
+
+
+def lien_email(classe="", texte=None):
+    """Lien mailto : ouvre la messagerie du visiteur (Gmail, Outlook, Mail…)."""
+    c = f' class="{classe}"' if classe else ""
+    return f'<a{c} href="mailto:{SITE["email"]}">{icon("mail")} {texte or SITE["email"]}</a>'
+
+
+def contact_direct(classe="arrow"):
+    """Moyen de contact secondaire : téléphone s'il existe, sinon email."""
+    if a_tel():
+        return (f'<a class="{classe}" href="tel:{SITE["telephone_lien"]}">'
+                f'{icon("phone")} {SITE["telephone"]} {icon("arrow")}</a>')
+    return (f'<a class="{classe}" href="mailto:{SITE["email"]}">'
+            f'{icon("mail")} Nous écrire {icon("arrow")}</a>')
 
 
 # ---------------------------------------------------------------------------
@@ -121,6 +147,14 @@ def brand(root, tag=True):
     </a>"""
 
 
+def header_contact():
+    if a_tel():
+        return (f'<a class="header-contact" href="tel:{SITE["telephone_lien"]}">'
+                f'{icon("phone")} {SITE["telephone"]}</a>')
+    return (f'<a class="header-contact" href="mailto:{SITE["email"]}">'
+            f'{icon("mail")} {SITE["email"]}</a>')
+
+
 def header(current, root):
     parts = []
     for href, label in NAV_ITEMS:
@@ -141,7 +175,7 @@ def header(current, root):
     </nav>
 
     <div class="header-cta">
-      <a class="header-phone" href="tel:{SITE['telephone_lien']}">{icon('phone')} {SITE['telephone']}</a>
+      {header_contact()}
       <a class="btn btn--primary" href="{rel('rendez-vous.html', root)}">Rendez-vous</a>
       <button class="nav-toggle" type="button" aria-expanded="false"
               aria-controls="nav-principal" aria-label="Ouvrir le menu">
@@ -191,7 +225,7 @@ def footer(root):
         <div>
           <h4>Nous joindre</h4>
           <ul>
-            <li><a href="tel:{SITE['telephone_lien']}">{SITE['telephone']}</a></li>
+            {'<li><a href="tel:' + SITE['telephone_lien'] + '">' + SITE['telephone'] + '</a></li>' if a_tel() else ''}
             <li><a href="mailto:{SITE['email']}">{SITE['email']}</a></li>
             <li>{SITE['adresse']}<br>{SITE['code_postal']} {SITE['ville']}</li>
             <li>{SITE['horaires']}</li>
@@ -223,7 +257,9 @@ def footer(root):
 </footer>
 
 <div class="mobile-bar">
-  <a class="mb-call" href="tel:{SITE['telephone_lien']}">{icon('phone')} Appeler</a>
+  {'<a class="mb-alt" href="tel:' + SITE['telephone_lien'] + '">' + icon('phone') + ' Appeler</a>'
+   if a_tel() else
+   '<a class="mb-alt" href="mailto:' + SITE['email'] + '">' + icon('mail') + ' Écrire</a>'}
   <a class="mb-book" href="{rel('rendez-vous.html', root)}">{icon('calendar')} Rendez-vous</a>
 </div>"""
 
@@ -243,7 +279,7 @@ def cta(root,
       </div>
       <div class="cta__actions reveal reveal-d1">
         <a class="btn btn--primary" href="{rel('rendez-vous.html', root)}">Réserver un créneau</a>
-        <a class="arrow arrow--light" href="tel:{SITE['telephone_lien']}">{SITE['telephone']} {icon('arrow')}</a>
+        {contact_direct("arrow arrow--light")}
       </div>
     </div>
   </div>
@@ -394,7 +430,7 @@ def booking_card(root, motif=None, titre="Réservez votre premier échange",
       <p class="panel__alt">
         Vous préférez écrire&nbsp;?
         <a href="{rel('contact.html', root)}">Formulaire de contact</a>
-        · <a href="tel:{SITE['telephone_lien']}">{SITE['telephone']}</a>
+        · <a href="mailto:{SITE['email']}">Nous écrire</a>
       </p>
     </div>"""
 
@@ -427,9 +463,8 @@ def calendly_embed():
           {icon('calendar')} Afficher le calendrier
         </button>
         <p class="booking__fallback">
-          Vous préférez ne pas passer par l'agenda&nbsp;?
-          Appelez le <a href="tel:{SITE['telephone_lien']}">{SITE['telephone']}</a>
-          ou écrivez à <a href="mailto:{SITE['email']}">{SITE['email']}</a>.
+          Vous préférez ne pas passer par l'agenda&nbsp;? Écrivez-nous à
+          <a href="mailto:{SITE['email']}">{SITE['email']}</a>, nous fixons le créneau ensemble.
         </p>
       </div>
       <div class="booking__widget" id="booking-widget" hidden></div>
@@ -443,14 +478,68 @@ def jsonstr(s):
     return '"' + s.replace("\\", "\\\\").replace('"', '\\"').replace("\n", " ") + '"'
 
 
-SCHEMA_ORG = f"""<script type="application/ld+json">
+def jsonlist(items):
+    return "[" + ",".join(jsonstr(x) for x in items) + "]"
+
+
+def offres_schema():
+    return ",".join(
+        '{"@type":"Offer","itemOffered":{"@type":"Service","name":%s,"url":%s}}'
+        % (jsonstr(e["titre"]), jsonstr(SITE["domaine"] + "/expertises/" + e["slug"] + ".html"))
+        for e in EXPERTISES
+    )
+
+
+def schema_org():
+    """Fiche du cabinet : c'est elle que Google lit pour le panneau de connaissance."""
+    tel = f'"telephone":"{SITE["telephone_lien"]}",' if a_tel() else ""
+    mots = ["conseil fiscal", "contrôle fiscal", "contrôle URSSAF",
+            "proposition de rectification", "réclamation contentieuse",
+            "recours hiérarchique", "entreprises en difficulté", "sauvegarde",
+            "redressement judiciaire", "création d'entreprise", "paie",
+            "déclaration sociale nominative"]
+    return f"""<script type="application/ld+json">
 {{"@context":"https://schema.org","@type":"ProfessionalService",
+"@id":"{SITE['domaine']}/#cabinet",
 "name":"{SITE['nom']}",
 "description":"Conseil et assistance en matière fiscale, sociale, administrative, financière et de gestion.",
-"url":"{SITE['domaine']}","telephone":"{SITE['telephone_lien']}","email":"{SITE['email']}",
+"url":"{SITE['domaine']}",{tel}"email":"{SITE['email']}",
 "address":{{"@type":"PostalAddress","streetAddress":"{SITE['adresse']}","postalCode":"{SITE['code_postal']}","addressLocality":"{SITE['ville']}","addressCountry":"FR"}},
-"areaServed":"FR","priceRange":"€€"}}
+"areaServed":{{"@type":"Country","name":"France"}},
+"priceRange":"€€","currenciesAccepted":"EUR",
+"slogan":"{SITE['signature']}",
+"knowsAbout":{jsonlist(mots)},
+"makesOffer":[{offres_schema()}]}}
+</script>
+<script type="application/ld+json">
+{{"@context":"https://schema.org","@type":"WebSite","name":"{SITE['nom']}",
+"url":"{SITE['domaine']}","inLanguage":"fr-FR"}}
 </script>"""
+
+
+def breadcrumb_schema(items):
+    """Fil d'Ariane exploitable par Google (affiché sous le titre des résultats)."""
+    el = []
+    for i, (label, href) in enumerate(items, 1):
+        url = SITE["domaine"] + "/" + (href or "").lstrip("./")
+        el.append('{"@type":"ListItem","position":%d,"name":%s,"item":%s}'
+                  % (i, jsonstr(label), jsonstr(url)))
+    return ('<script type="application/ld+json">'
+            f'{{"@context":"https://schema.org","@type":"BreadcrumbList",'
+            f'"itemListElement":[{",".join(el)}]}}</script>')
+
+
+def service_schema(e):
+    """Décrit chaque pôle comme un service rendu par le cabinet."""
+    return ('<script type="application/ld+json">'
+            '{"@context":"https://schema.org","@type":"Service",'
+            f'"name":{jsonstr(e["titre"])},'
+            f'"description":{jsonstr(e["resume"])},'
+            f'"serviceType":{jsonstr(e["titre"])},'
+            '"provider":{"@type":"ProfessionalService","name":%s,"url":%s},'
+            '"areaServed":{"@type":"Country","name":"France"},'
+            '"audience":{"@type":"BusinessAudience","audienceType":"Dirigeants et entreprises"}}'
+            '</script>' % (jsonstr(SITE["nom"]), jsonstr(SITE["domaine"])))
 
 
 def faq_schema(pairs):
@@ -490,6 +579,11 @@ def layout(path, titre, description, body, root="", schema=""):
 <meta property="og:title" content="{titre}">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{canonical}">
+<meta property="og:image" content="{SITE['domaine']}/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{SITE['nom']} — {SITE['baseline']}">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="{rel('assets/img/favicon.svg', root)}" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -649,11 +743,17 @@ def page_accueil():
 {cta("")}
 """
     return layout("index.html",
-                  "CCF Conseil — Conseil fiscal, contrôles et accompagnement des entreprises",
-                  "Cabinet de conseil et d'assistance en matière fiscale, sociale et administrative. "
-                  "Contrôle fiscal, contrôle URSSAF, entreprises en difficulté, création, paie et DSN. "
-                  "Premier échange de 15 minutes offert.",
-                  body, "", SCHEMA_ORG)
+                  seo_titre("Conseil fiscal, contrôles et entreprises"),
+                  "Contrôle fiscal, contrôle URSSAF, entreprise en difficulté, création, paie et DSN : "
+                  "conseil et assistance aux dirigeants. Premier échange de 15 minutes offert.",
+                  body, "", schema_org())
+
+
+def seo_titre(debut):
+    """Titre de page : mot-clé d'abord, marque à la fin, ville si renseignée."""
+    ville = SITE["ville"].strip()
+    lieu = f" à {ville}" if ville and "compléter" not in ville.lower() else ""
+    return f"{debut}{lieu} | {SITE['nom']}"
 
 
 def page_expertise(e):
@@ -713,8 +813,11 @@ def page_expertise(e):
 
 {cta(root)}
 """
-    return layout(f"expertises/{e['slug']}.html", f"{e['titre']} — {SITE['nom']}",
-                  e["meta"], body, root, faq_schema(e["faq"]))
+    return layout(f"expertises/{e['slug']}.html", seo_titre(e['titre_seo']),
+                  e["meta"], body, root,
+                  faq_schema(e["faq"]) + service_schema(e) + breadcrumb_schema(
+                      [("Accueil", ""), ("Expertises", "expertises/"),
+                       (e["titre"], "expertises/" + e["slug"] + ".html")]))
 
 
 def page_expertises_index():
@@ -733,10 +836,11 @@ def page_expertises_index():
 
 {cta(root)}
 """
-    return layout("expertises/index.html", f"Nos expertises — {SITE['nom']}",
-                  "Les sept pôles d'expertise de CCF Conseil : conseil fiscal, contrôle fiscal, "
-                  "contrôle URSSAF, entreprises en difficulté, création d'entreprise, social et paie, "
-                  "procédures et recours.", body, root)
+    return layout("expertises/index.html", seo_titre("Nos sept pôles d'expertise"),
+                  "Conseil fiscal, contrôle fiscal, contrôle URSSAF, entreprise en difficulté, "
+                  "création, paie et DSN, procédures et recours : sept pôles d'accompagnement.",
+                  body, root,
+                  breadcrumb_schema([("Accueil", ""), ("Expertises", "expertises/index.html")]))
 
 
 def page_cabinet():
@@ -832,10 +936,10 @@ def page_cabinet():
 
 {cta("")}
 """
-    return layout("cabinet.html", f"Le cabinet — {SITE['nom']}",
-                  "CCF Conseil : cabinet de conseil et d'assistance en matière fiscale, sociale et "
-                  "administrative. Confidentialité, anticipation, coordination des professionnels "
-                  "compétents.", body, "")
+    return layout("cabinet.html", seo_titre("Le cabinet de conseil fiscal"),
+                  "Cabinet de conseil et d'assistance en matière fiscale, sociale et administrative. "
+                  "Confidentialité, anticipation et coordination des professionnels compétents.",
+                  body, "", breadcrumb_schema([("Accueil", ""), ("Le cabinet", "cabinet.html")]))
 
 
 def page_methode():
@@ -890,9 +994,10 @@ def page_methode():
 
 {cta("")}
 """
-    return layout("methode.html", f"Notre méthode — {SITE['nom']}",
-                  "La méthode CCF Conseil en quatre étapes : analyser la situation, identifier les "
-                  "enjeux, préparer le dossier, coordonner les professionnels compétents.", body, "")
+    return layout("methode.html", seo_titre("Notre méthode en quatre étapes"),
+                  "Analyser la situation, identifier les enjeux, préparer un dossier exploitable et "
+                  "coordonner les professionnels compétents : la méthode du cabinet, étape par étape.",
+                  body, "", breadcrumb_schema([("Accueil", ""), ("Notre méthode", "methode.html")]))
 
 
 def page_procedure():
@@ -967,11 +1072,11 @@ def page_procedure():
      "Appelez-nous, nous le regardons ensemble.")}
 """
     return layout("procedure-fiscale.html",
-                  f"La procédure fiscale étape par étape : délais et recours — {SITE['nom']}",
-                  "Proposition de rectification, réponse du contribuable, réclamation contentieuse, "
-                  "recours hiérarchique, tribunal administratif : toutes les étapes de la procédure "
-                  "fiscale et les délais à respecter, expliqués simplement.",
-                  body, "", faq_schema(faq))
+                  seo_titre("Procédure fiscale : étapes et délais"),
+                  "Proposition de rectification, réclamation contentieuse, recours hiérarchique, "
+                  "tribunal administratif : les huit étapes et le délai applicable à chacune.",
+                  body, "", faq_schema(faq) + breadcrumb_schema(
+                      [("Accueil", ""), ("La procédure fiscale", "procedure-fiscale.html")]))
 
 
 def page_ressources():
@@ -1023,7 +1128,7 @@ def page_ressources():
 
 {cta(root)}
 """
-    return layout("ressources/index.html", f"Ressources — {SITE['nom']}",
+    return layout("ressources/index.html", seo_titre("Ressources : contrôles et procédures"),
                   "Guides et fiches pratiques sur le contrôle fiscal, le contrôle URSSAF, les délais "
                   "de procédure, le sursis de paiement et les difficultés d'entreprise.", body, root)
 
@@ -1043,10 +1148,11 @@ def page_contact():
         <h2>Trois façons d'échanger</h2>
         <div class="stack mt">
           <div class="note">
-            {icon('phone', 'note__icon')}
-            <h3>Par téléphone</h3>
-            <p>Le plus direct, surtout en cas d'échéance proche.</p>
-            <p class="mt-s"><a class="arrow" href="tel:{SITE['telephone_lien']}">{SITE['telephone']} {icon('arrow')}</a></p>
+            {icon('mail', 'note__icon')}
+            <h3>Par email</h3>
+            <p>Le plus simple pour exposer une situation et joindre le contexte utile.
+               Réponse sous 24 heures ouvrées.</p>
+            <p class="mt-s">{lien_email("arrow")}</p>
           </div>
           <div class="note">
             {icon('video', 'note__icon')}
@@ -1063,8 +1169,8 @@ def page_contact():
       <div class="panel reveal reveal-d2">
         <span class="panel__label">Formulaire de contact</span>
         <h2>Décrivez votre situation</h2>
-        <p class="panel__sub">Nous vous répondons sous 24 heures ouvrées. Si la situation est
-          urgente, privilégiez le téléphone.</p>
+        <p class="panel__sub">Nous vous répondons sous 24 heures ouvrées. Si votre échéance est
+          proche, réservez directement un créneau.</p>
         {form("", False, "contact")}
         <p class="panel__alt">Vous préférez fixer un créneau tout de suite&nbsp;?
           <a href="rendez-vous.html">Réserver 15 minutes</a></p>
@@ -1075,9 +1181,10 @@ def page_contact():
 
 {cta("")}
 """
-    return layout("contact.html", f"Contact — {SITE['nom']}",
-                  "Contactez CCF Conseil par téléphone, en visioconférence ou au cabinet. "
-                  "Premier échange de 15 minutes offert, sans engagement.", body, "")
+    return layout("contact.html", seo_titre("Contacter le cabinet"),
+                  "Écrivez-nous ou réservez un premier échange de 15 minutes, par téléphone, "
+                  "en visioconférence ou au cabinet. Sans engagement, réponse sous 24 heures.",
+                  body, "", breadcrumb_schema([("Accueil", ""), ("Contact", "contact.html")]))
 
 
 def page_rdv():
@@ -1105,7 +1212,7 @@ def page_rdv():
         <h3 class="mb">Le format de l'échange</h3>
         <div class="stack">
           <div class="note">{icon('phone', 'note__icon')}<h3>Par téléphone</h3>
-            <p>Le format le plus simple et le plus rapide. Nous vous appelons au numéro indiqué.</p></div>
+            <p>Le format le plus simple et le plus rapide. Nous vous appelons au numéro que vous indiquez lors de la réservation.</p></div>
           <div class="note">{icon('video', 'note__icon')}<h3>En visioconférence</h3>
             <p>Utile pour examiner ensemble des documents pendant l'échange.</p></div>
           <div class="note">{icon('pin', 'note__icon')}<h3>Au cabinet</h3>
@@ -1132,9 +1239,10 @@ def page_rdv():
   </div>
 </section>
 """
-    return layout("rendez-vous.html", f"Prendre rendez-vous — 15 minutes offertes — {SITE['nom']}",
-                  "Réservez un premier échange de 15 minutes avec CCF Conseil, par téléphone, "
-                  "en visioconférence ou au cabinet. Sans engagement.", body, "")
+    return layout("rendez-vous.html", seo_titre("Prendre rendez-vous, 15 minutes offertes"),
+                  "Choisissez un créneau dans l'agenda du cabinet : premier échange de 15 minutes, "
+                  "par téléphone, en visioconférence ou au cabinet. Sans engagement.",
+                  body, "", breadcrumb_schema([("Accueil", ""), ("Rendez-vous", "rendez-vous.html")]))
 
 
 def page_prose(path, titre, h1, label, description, contenu):
@@ -1285,7 +1393,9 @@ def page_plan():
 </ul>
 """
     return page_prose("plan-du-site.html", f"Plan du site — {SITE['nom']}", "Plan du site",
-                      "Navigation", f"Plan du site {SITE['nom']}.", contenu)
+                      "Navigation",
+                      "Toutes les pages du site CCF Conseil : expertises, méthode, procédure "
+                      "fiscale, ressources, contact et informations légales.", contenu)
 
 
 def page_404():
@@ -1310,13 +1420,10 @@ def page_404():
       <div class="panel reveal reveal-d2">
         <span class="panel__label">Vous cherchiez à nous joindre&nbsp;?</span>
         <h2>Nous sommes joignables directement</h2>
-        <p class="panel__sub">Si votre situation est urgente, le téléphone reste le plus rapide.</p>
+        <p class="panel__sub">Réservez un créneau, ou écrivez-nous directement.</p>
         <p class="mt-s"><a class="btn btn--primary btn--block" href="/rendez-vous.html">
           {icon('calendar')} Réserver 15 minutes</a></p>
-        <p class="panel__alt">
-          <a href="tel:{SITE['telephone_lien']}">{SITE['telephone']}</a>
-          · <a href="mailto:{SITE['email']}">{SITE['email']}</a>
-        </p>
+        <p class="panel__alt">{lien_email()}</p>
       </div>
     </div>
   </div>

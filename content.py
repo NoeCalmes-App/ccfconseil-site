@@ -13,12 +13,13 @@ Les gabarits et la mise en page sont dans build.py.
 EXPERTISES = [
     {
         "slug": "conseil-fiscal",
+        "titre_seo": "Conseil fiscal pour entreprises",
         "nav": "Conseil fiscal",
         "titre": "Conseil fiscal",
         "accroche": "Anticiper pour mieux décider",
         "icone": "doc",
         "resume": "Analyse de votre situation fiscale, identification des points de vigilance et préparation des dossiers.",
-        "meta": "Conseil fiscal pour dirigeants et entreprises : analyse de votre situation, identification des risques, préparation et suivi des dossiers. Premier échange de 15 minutes offert.",
+        "meta": "Analyse de votre situation fiscale, identification des risques et préparation des dossiers. Premier échange de 15 minutes offert.",
         "intro": "Une décision fiscale se prépare rarement dans l'urgence. Analyser la situation en amont, repérer les points sensibles et documenter les choix retenus évite la plupart des difficultés qui surgissent des années plus tard, au moment d'un contrôle.",
         "tags": ["Analyse", "Points de vigilance", "Préparation de dossier"],
         "etapes": [
@@ -41,12 +42,13 @@ EXPERTISES = [
     },
     {
         "slug": "controle-fiscal",
+        "titre_seo": "Contrôle fiscal : se faire accompagner",
         "nav": "Contrôle fiscal",
         "titre": "Contrôle fiscal",
         "accroche": "Vous accompagner à chaque étape",
         "icone": "search",
         "resume": "Analyse des demandes de l'administration, organisation des pièces, préparation du dossier et suivi des échanges.",
-        "meta": "Accompagnement en cas de contrôle fiscal : analyse des demandes, organisation des pièces, préparation de la réponse et suivi des délais. Premier échange de 15 minutes offert.",
+        "meta": "Avis de vérification, proposition de rectification : organisation des pièces et réponse dans les délais. 15 minutes offertes.",
         "intro": "Un avis de vérification n'est pas une sanction, c'est le début d'une procédure encadrée par des délais stricts. Ce qui fait la différence, c'est la qualité des pièces réunies et la rigueur des réponses apportées dans les temps.",
         "tags": ["Avis de vérification", "Délai de 30 jours", "Préparation de la réponse"],
         "etapes": [
@@ -69,12 +71,13 @@ EXPERTISES = [
     },
     {
         "slug": "controle-urssaf",
+        "titre_seo": "Contrôle URSSAF : préparer son dossier",
         "nav": "Contrôle URSSAF",
         "titre": "Contrôle URSSAF",
         "accroche": "Analyse · Préparation · Suivi",
         "icone": "users",
         "resume": "Étude des documents reçus, préparation des éléments demandés et analyse des observations.",
-        "meta": "Accompagnement lors d'un contrôle URSSAF : étude des documents, préparation des éléments demandés, analyse des observations et suivi du redressement. Premier échange offert.",
+        "meta": "Étude des documents, préparation des éléments demandés et réponse à la lettre d'observations. Premier échange offert.",
         "intro": "Le contrôle URSSAF suit sa propre logique et ses propres délais. Les points examinés — frais professionnels, avantages en nature, statut des intervenants, DSN — appellent des justificatifs précis qu'il vaut mieux réunir avant la visite que pendant.",
         "tags": ["Avis de contrôle", "Lettre d'observations", "Mise en demeure"],
         "etapes": [
@@ -97,12 +100,13 @@ EXPERTISES = [
     },
     {
         "slug": "entreprises-en-difficulte",
+        "titre_seo": "Entreprise en difficulté : agir à temps",
         "nav": "Entreprises en difficulté",
         "titre": "Entreprises en difficulté",
         "accroche": "Intervenir avec méthode et anticipation",
         "icone": "shield",
         "resume": "Préparation administrative des dossiers de prévention, de sauvegarde et de redressement judiciaire.",
-        "meta": "Accompagnement des entreprises en difficulté : prévention, sauvegarde, redressement judiciaire. Préparation administrative des dossiers et coordination des professionnels compétents.",
+        "meta": "Prévention, sauvegarde, redressement judiciaire : préparation administrative des dossiers et coordination des professionnels.",
         "intro": "Les difficultés d'une entreprise se traitent d'autant mieux qu'elles sont prises tôt. Entre le moment où la trésorerie se tend et celui où la cessation de paiements est constatée, il existe une fenêtre pendant laquelle beaucoup de solutions restent ouvertes.",
         "tags": ["Prévention", "Sauvegarde", "Redressement judiciaire"],
         "etapes": [
@@ -124,12 +128,13 @@ EXPERTISES = [
     },
     {
         "slug": "creation-entreprise",
+        "titre_seo": "Création d'entreprise : être accompagné",
         "nav": "Création d'entreprise",
         "titre": "Création d'entreprise",
         "accroche": "Structurer le projet dès le départ",
         "icone": "brief",
         "resume": "Accompagnement dans les premières étapes du projet : constitution, organisation et préparation des éléments.",
-        "meta": "Accompagnement à la création d'entreprise : constitution, organisation administrative, préparation des éléments du projet et coordination des professionnels compétents.",
+        "meta": "Constitution, organisation administrative et préparation des éléments du projet, avec les professionnels compétents.",
         "intro": "Les choix faits au moment de la création se paient, dans un sens ou dans l'autre, pendant des années. Structurer le projet dès le départ coûte beaucoup moins cher que de le corriger une fois l'activité lancée.",
         "tags": ["Constitution", "Organisation", "Développement"],
         "etapes": [
@@ -152,12 +157,13 @@ EXPERTISES = [
     },
     {
         "slug": "social-paie-dsn",
+        "titre_seo": "Paie, déclarations sociales et DSN",
         "nav": "Social · Paie · DSN",
         "titre": "Social, paie et DSN",
         "accroche": "Accompagnement administratif au quotidien",
         "icone": "users",
         "resume": "Gestion administrative de la paie, préparation et suivi des déclarations sociales et de la DSN.",
-        "meta": "Accompagnement administratif en paie et déclarations sociales : préparation des éléments de paie, suivi des déclarations et de la DSN, organisation documentaire.",
+        "meta": "Préparation des éléments de paie, suivi des déclarations sociales et de la DSN, organisation documentaire du dossier social.",
         "intro": "La paie et les déclarations sociales ne tolèrent ni approximation ni retard. Une DSN mal préparée se rattrape, mais elle laisse des traces qui ressortent au premier contrôle URSSAF.",
         "tags": ["Paie", "Déclarations sociales", "DSN"],
         "etapes": [
@@ -180,12 +186,13 @@ EXPERTISES = [
     },
     {
         "slug": "procedures-et-recours",
+        "titre_seo": "Réclamation et recours fiscal",
         "nav": "Procédures & recours",
         "titre": "Procédures et recours",
         "accroche": "Du contrôle jusqu'au contentieux",
         "icone": "scale",
         "resume": "Analyse documentaire et préparation administrative des dossiers de réclamation et de recours.",
-        "meta": "Procédures et recours fiscaux : réclamation contentieuse, recours hiérarchique, saisine du tribunal administratif. Préparation des dossiers et coordination d'un avocat fiscaliste.",
+        "meta": "Réclamation contentieuse, recours hiérarchique, tribunal administratif : préparation des dossiers et respect des délais.",
         "intro": "Un désaccord avec l'administration n'est pas une impasse. Réclamation, recours hiérarchique, tribunal administratif : chaque voie a ses conditions et surtout ses délais, dont le dépassement est irrattrapable.",
         "tags": ["Réclamation", "Recours hiérarchique", "Tribunal administratif"],
         "etapes": [

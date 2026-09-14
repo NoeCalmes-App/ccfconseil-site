@@ -30,6 +30,14 @@ concerné est parfaitement valable.
 
 ---
 
+## Navigation
+
+Le menu reprend les cinq entrées de la maquette : **Cabinet, Expertises, Méthode, Procédures,
+Contact**. « Ressources » n'y figure pas tant que les fiches ne sont pas rédigées : une entrée
+de menu qui mène à une page vide dessert autant le référencement que la crédibilité. La page
+reste accessible depuis le pied de page, le plan du site et le `sitemap.xml`. Pour la remettre
+au menu une fois les articles publiés, ajouter une ligne à `NAV_ITEMS` dans `build.py`.
+
 ## Structure
 
 ```
@@ -74,8 +82,9 @@ Tout est regroupé dans le dictionnaire `SITE` en haut de `build.py`. Les valeur
 
 | Champ | Utilisé pour |
 |---|---|
-| `telephone`, `telephone_lien` | En-tête, pied de page, barre mobile, données structurées |
-| `email` | Formulaires, mentions légales, confidentialité |
+| `email` | En-tête, pied de page, barre mobile, formulaires, mentions légales |
+| `calendly` | Page de rendez-vous |
+| `telephone`, `telephone_lien` | **Laissés vides** : tant qu'ils le sont, l'email prend leur place partout. Dès qu'ils sont renseignés, le téléphone réapparaît seul dans l'en-tête, le pied de page, la barre mobile et les données structurées. |
 | `adresse`, `code_postal`, `ville` | Pied de page, contact, **référencement local** |
 | `siren`, `forme` | Mentions légales |
 | `domaine` | URL canoniques, `sitemap.xml`, `robots.txt` |
@@ -155,11 +164,45 @@ disparaît dès que l'URL est renseignée. Penser à ajouter le domaine du servi
 
 Déjà en place :
 
-- une page par intention de recherche, avec titre et description propres ;
-- URL canoniques, `sitemap.xml`, `robots.txt`, page 404 ;
-- données structurées `ProfessionalService` sur l'accueil et `FAQPage` sur les pages à questions ;
-- HTML sémantique, fil d'Ariane, hiérarchie de titres cohérente ;
-- aucune dépendance JavaScript lourde, images vectorielles, chargement quasi instantané.
+- **Une page par intention de recherche.** Le titre place le mot-clé en premier et la marque en
+  dernier, la description tient entre 110 et 165 caractères — la fourchette réellement affichée
+  par Google.
+- **La ville s'insère automatiquement** dans tous les titres dès que `ville` est renseigné dans
+  `SITE` (« Contrôle fiscal : se faire accompagner à Rodez | CCF Conseil »). C'est le levier
+  numéro un du référencement local, et il ne demande qu'une seule saisie.
+- **Données structurées** : `ProfessionalService` et `WebSite` sur l'accueil, `Service` sur chaque
+  page d'expertise, `FAQPage` partout où il y a des questions, `BreadcrumbList` sur toutes les
+  pages intérieures. Ce sont elles qui produisent les résultats enrichis et le fil d'Ariane
+  affiché sous le lien dans Google.
+- **Image de partage** `assets/img/og.png` (1200 × 630) avec les balises Open Graph et Twitter :
+  un lien collé dans un email, LinkedIn ou WhatsApp affiche une vignette propre.
+- URL canoniques, `sitemap.xml` avec priorités, `robots.txt`, page 404 en `noindex`.
+- HTML sémantique, fil d'Ariane visible, un seul `h1` par page, hiérarchie de titres continue.
+- Aucune dépendance JavaScript lourde, images vectorielles, chargement quasi instantané :
+  les Core Web Vitals sont un critère de classement direct.
+
+Un audit rapide avant chaque mise en ligne (longueur des titres, des descriptions, unicité du
+`h1`, présence des données structurées) :
+
+```bash
+python3 - <<'EOF'
+import os, re, html
+for dp, dn, fn in os.walk('.'):
+    dn[:] = [d for d in dn if d not in ('.git', '__pycache__', '.well-known')]
+    for f in sorted(fn):
+        if not f.endswith('.html'):
+            continue
+        p = os.path.join(dp, f).replace('./', '')
+        s = open(p, encoding='utf-8').read()
+        ti = re.search(r'<title>(.*?)</title>', s, re.S)
+        de = re.search(r'<meta name="description" content="(.*?)">', s, re.S)
+        tl = len(html.unescape(ti.group(1))) if ti else 0
+        dl = len(html.unescape(de.group(1))) if de else 0
+        h1 = len(re.findall(r'<h1[ >]', s))
+        ok = 28 <= tl <= 65 and 70 <= dl <= 165 and h1 == 1
+        print(f"{p:42} titre {tl:>3}  desc {dl:>3}  h1 {h1}  {'' if ok else '<-- a revoir'}")
+EOF
+```
 
 Reste à faire après la mise en ligne :
 

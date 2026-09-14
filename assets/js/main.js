@@ -56,6 +56,23 @@
   }
 
   /* ----------------------------------------------------------------------
+     Hauteur réelle de l'en-tête
+     Le menu mobile s'ouvre juste sous l'en-tête, quelle que soit sa hauteur :
+     pas d'écart ni de recouvrement.
+     ---------------------------------------------------------------------- */
+  function mesurerHeader() {
+    if (!header) { return; }
+    var h = Math.round(header.getBoundingClientRect().height);
+    document.documentElement.style.setProperty('--header-h', h + 'px');
+  }
+  mesurerHeader();
+  window.addEventListener('resize', mesurerHeader);
+  window.addEventListener('orientationchange', mesurerHeader);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(mesurerHeader);
+  }
+
+  /* ----------------------------------------------------------------------
      Apparition au défilement
      ---------------------------------------------------------------------- */
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
