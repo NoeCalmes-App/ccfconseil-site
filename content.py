@@ -10,7 +10,7 @@ Tout le texte du site vit dans le dossier `content/`, en JSON :
     content/procedure.json    les étapes de la procédure fiscale
     content/ressources.json   les fiches pratiques
 
-C'est la base de contenu du site. Elle se modifie de trois façons :
+Ce sont de simples fichiers, versionnés avec le code. Trois façons de les modifier :
 
   1. depuis l'interface d'administration (`/admin`), sans toucher au code ;
   2. en éditant les fichiers JSON à la main ;

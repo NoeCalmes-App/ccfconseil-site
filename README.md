@@ -110,7 +110,7 @@ au menu une fois les articles publiés, ajouter une ligne à `NAV_ITEMS` dans `b
 │   ├── css/style.css             Feuille de style unique et commentée
 │   ├── js/main.js                Menu, apparitions, formulaires
 │   └── img/favicon.svg
-├── content/                      LA BASE DE CONTENU (JSON)
+├── content/                      LE CONTENU DU SITE (JSON)
 │   ├── cabinet.json
 │   ├── expertises.json
 │   ├── procedure.json
@@ -118,7 +118,7 @@ au menu une fois les articles publiés, ajouter une ligne à `NAV_ITEMS` dans `b
 ├── admin/                        Interface d'administration (noindex)
 ├── tools/                        Serveur de développement et audit
 ├── build.py                      Générateur
-├── content.py                    Chargement de la base
+├── content.py                    Chargement du contenu
 ├── sitemap.xml
 ├── robots.txt
 └── .nojekyll                     Indispensable sur GitHub Pages
@@ -126,7 +126,7 @@ au menu une fois les articles publiés, ajouter une ligne à `NAV_ITEMS` dans `b
 
 ---
 
-## La base de contenu
+## Le contenu éditable
 
 Tout le texte du site vit dans `content/`, en JSON :
 
@@ -138,7 +138,8 @@ content/
 └── ressources.json   Les fiches pratiques
 ```
 
-C'est la base de données du site. Trois façons de la modifier :
+Ce ne sont pas des enregistrements dans une base : ce sont des fichiers, versionnés
+avec le code. Trois façons de les modifier :
 
 **1. Depuis l'interface d'administration** — `https://<le-domaine>/admin`. La cliente se
 connecte avec son compte GitHub et modifie ses textes dans des formulaires, sans voir une
@@ -148,11 +149,11 @@ ligne de code. Chaque enregistrement crée un commit ; le site se régénère à
 
 **3. Par un script**, si un jour il faut importer des données en masse.
 
-Pourquoi ce choix plutôt qu'une vraie base serveur : le site reste **entièrement statique**.
+**Ce n'est pas une contenu éditable, et c'est volontaire.** Le site reste entièrement statique :
 Le JSON est lu au moment de la génération, jamais par le navigateur du visiteur. Résultat :
 rien à héberger, rien à sauvegarder, aucune faille d'injection possible, aucun abonnement —
 et l'historique des modifications, avec l'auteur et la date de chaque changement, c'est
-celui de git. Une base MySQL sur ce site n'apporterait rien de plus et coûterait un serveur,
+celui de git. Une vraie base serveur n'apporterait rien de plus ici, et coûterait un hébergement,
 des sauvegardes et une surface d'attaque.
 
 ### Activer l'interface d'administration
@@ -340,7 +341,7 @@ Déjà en place :
 
 GitHub Pages ne permet pas de définir ces en-têtes. Ils se configurent en plaçant le site
 derrière Cloudflare (offre gratuite), ce qui apporte aussi le HSTS et un certificat géré.
-Sans cela, le site reste sûr — il n'y a ni base de données, ni code serveur, ni session à
+Sans cela, le site reste sûr — il n'y a ni contenu éditable, ni code serveur, ni session à
 compromettre — mais ces en-têtes ferment les derniers angles morts.
 
 ## Accessibilité et compatibilité
