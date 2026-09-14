@@ -34,9 +34,13 @@ SITE = {
     # barre mobile, données structurées) sans autre modification.
     "telephone": "",
     "telephone_lien": "",
-    "adresse": "Adresse à compléter",       # À REMPLACER
-    "code_postal": "00000",                 # À REMPLACER
-    "ville": "Ville à compléter",           # À REMPLACER
+    # Adresse : laisser vide tant qu'elle n'est pas communiquée.
+    # Les blocs « Au cabinet » disparaissent alors d'eux-mêmes.
+    "adresse": "",
+    "code_postal": "",
+    # La ville, même sans adresse complète, vaut la peine d'être renseignée :
+    # elle s'insère dans tous les titres et conditionne le référencement local.
+    "ville": "",
     "siren": "SIREN à compléter",           # À REMPLACER
     "forme": "Société à compléter",         # À REMPLACER
     "horaires": "Du lundi au vendredi, 9h – 18h",
@@ -96,6 +100,20 @@ NAV_ITEMS = [
 
 def rel(path, root):
     return root + path
+
+
+def a_adresse():
+    """Les blocs d'adresse ne s'affichent que si elle est renseignée."""
+    return bool(SITE["adresse"].strip())
+
+
+def a_ville():
+    return bool(SITE["ville"].strip())
+
+
+def adresse_html(separateur="<br>"):
+    morceaux = [SITE["adresse"], f'{SITE["code_postal"]} {SITE["ville"]}'.strip()]
+    return separateur.join(m for m in morceaux if m.strip())
 
 
 def a_tel():
@@ -227,7 +245,7 @@ def footer(root):
           <ul>
             {'<li><a href="tel:' + SITE['telephone_lien'] + '">' + SITE['telephone'] + '</a></li>' if a_tel() else ''}
             <li><a href="mailto:{SITE['email']}">{SITE['email']}</a></li>
-            <li>{SITE['adresse']}<br>{SITE['code_postal']} {SITE['ville']}</li>
+            {'<li>' + adresse_html() + '</li>' if a_adresse() else ''}
             <li>{SITE['horaires']}</li>
           </ul>
           <p style="margin-top:26px">
@@ -495,6 +513,18 @@ def offres_schema():
     )
 
 
+def adresse_schema():
+    """Bloc PostalAddress : on ne déclare que ce qui existe réellement."""
+    champs = ['"addressCountry":"FR"']
+    if SITE["adresse"].strip():
+        champs.insert(0, f'"streetAddress":"{SITE["adresse"]}"')
+    if SITE["code_postal"].strip():
+        champs.insert(-1, f'"postalCode":"{SITE["code_postal"]}"')
+    if SITE["ville"].strip():
+        champs.insert(-1, f'"addressLocality":"{SITE["ville"]}"')
+    return '"address":{"@type":"PostalAddress",' + ",".join(champs) + "},"
+
+
 def schema_org():
     """Fiche du cabinet : c'est elle que Google lit pour le panneau de connaissance."""
     tel = f'"telephone":"{SITE["telephone_lien"]}",' if a_tel() else ""
@@ -509,7 +539,7 @@ def schema_org():
 "name":"{SITE['nom']}",
 "description":"Conseil et assistance en matière fiscale, sociale, administrative, financière et de gestion.",
 "url":"{SITE['domaine']}",{tel}"email":"{SITE['email']}",
-"address":{{"@type":"PostalAddress","streetAddress":"{SITE['adresse']}","postalCode":"{SITE['code_postal']}","addressLocality":"{SITE['ville']}","addressCountry":"FR"}},
+{adresse_schema()}
 "areaServed":{{"@type":"Country","name":"France"}},
 "priceRange":"€€","currenciesAccepted":"EUR",
 "slogan":"{SITE['signature']}",
@@ -1162,6 +1192,17 @@ def page_ressources():
                   "de procédure, le sursis de paiement et les difficultés d'entreprise.", body, root)
 
 
+def carte_cabinet():
+    """Rendez-vous au cabinet : proposé seulement si une adresse est renseignée."""
+    if not a_adresse():
+        return ""
+    return f"""<div class="note">
+            {icon('pin', 'note__icon')}
+            <h3>Au cabinet</h3>
+            <p>{adresse_html()}<br>{SITE['horaires']}</p>
+          </div>"""
+
+
 def page_contact():
     body = f"""{page_head("Contact", "Prenons le temps d'analyser votre situation",
       "Un premier échange pour comprendre votre besoin et identifier l'accompagnement adapté. "
@@ -1188,11 +1229,7 @@ def page_contact():
             <h3>En visioconférence</h3>
             <p>Pratique pour passer en revue des documents ensemble, où que vous soyez.</p>
           </div>
-          <div class="note">
-            {icon('pin', 'note__icon')}
-            <h3>Au cabinet</h3>
-            <p>{SITE['adresse']}<br>{SITE['code_postal']} {SITE['ville']}<br>{SITE['horaires']}</p>
-          </div>
+          {carte_cabinet()}
         </div>
       </div>
       <div class="panel reveal reveal-d2">
@@ -1244,8 +1281,9 @@ def page_rdv():
             <p>Le format le plus simple et le plus rapide. Nous vous appelons au numéro que vous indiquez lors de la réservation.</p></div>
           <div class="note">{icon('video', 'note__icon')}<h3>En visioconférence</h3>
             <p>Utile pour examiner ensemble des documents pendant l'échange.</p></div>
-          <div class="note">{icon('pin', 'note__icon')}<h3>Au cabinet</h3>
-            <p>Sur rendez-vous, pour les dossiers qui méritent un examen approfondi.</p></div>
+          {'<div class="note">' + icon('pin', 'note__icon') + '<h3>Au cabinet</h3>'
+            '<p>Sur rendez-vous, pour les dossiers qui méritent un examen approfondi.</p></div>'
+            if a_adresse() else ''}
         </div>
 
         <div class="callout mt">
@@ -1280,6 +1318,10 @@ def page_prose(path, titre, h1, label, description, contenu):
 <section class="section">
   <div class="container"><div class="prose">{contenu}</div></div>
 </section>
+
+{cta("", "Une question sur votre situation ?",
+     "Un premier échange de quinze minutes, sans engagement, pour comprendre votre besoin "
+     "et identifier l'accompagnement adapté.")}
 """
     return layout(path, titre, description, body, "")
 
@@ -1288,7 +1330,7 @@ def page_mentions():
     contenu = f"""
 <h2>Éditeur du site</h2>
 <p>{SITE['nom']} — {SITE['forme']}<br>
-Siège social : {SITE['adresse']}, {SITE['code_postal']} {SITE['ville']}<br>
+Siège social : {adresse_html(", ") or "à compléter"}<br>
 SIREN : {SITE['siren']}<br>
 Téléphone : <a href="tel:{SITE['telephone_lien']}">{SITE['telephone']}</a><br>
 Courriel : <a href="mailto:{SITE['email']}">{SITE['email']}</a></p>
@@ -1337,7 +1379,7 @@ collectées sur ce site, conformément au Règlement général sur la protection
 loi Informatique et Libertés.</p>
 
 <h2>Responsable du traitement</h2>
-<p>{SITE['nom']}, {SITE['adresse']}, {SITE['code_postal']} {SITE['ville']} —
+<p>{SITE['nom']}{", " + adresse_html(", ") if a_adresse() else ""} —
 <a href="mailto:{SITE['email']}">{SITE['email']}</a>.</p>
 
 <h2>Données collectées</h2>
@@ -1457,6 +1499,8 @@ def page_404():
     </div>
   </div>
 </section>
+
+{cta("")}
 """
     return layout("404.html", f"Page introuvable — {SITE['nom']}",
                   "La page demandée n'existe pas. Retrouvez les expertises, la procédure fiscale "

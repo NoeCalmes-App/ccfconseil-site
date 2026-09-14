@@ -837,3 +837,23 @@ thead th {
   letter-spacing: .2em; text-transform: uppercase; color: var(--brass-lt);
   margin: 0 0 22px; line-height: 1.4;
 }
+
+/* --------------------------------------------------------------------------
+   23. Rythme vertical et performance
+   -------------------------------------------------------------------------- */
+
+/* Une section qui suit directement le fil d'Ariane n'a pas besoin
+   de la respiration complète : elle créait un grand vide à l'ouverture. */
+.crumb + .section { padding-top: clamp(40px, 5vw, 76px); }
+.crumb + .section .timeline { margin-top: 0; }
+
+/* Le navigateur ne calcule la mise en page des sections hors écran
+   qu'au moment de les afficher. La hauteur réservée évite tout décalage. */
+.section:not(:first-of-type) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+/* Exclusions : ces blocs doivent rester mesurés en permanence. */
+.hero, .page-head, .cta, .crumb, .site-header, .site-footer {
+  content-visibility: visible;
+}
