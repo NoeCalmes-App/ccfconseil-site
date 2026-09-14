@@ -9,7 +9,7 @@
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0B1B30">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://formspree.io https://api.web3forms.com; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://assets.calendly.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://assets.calendly.com; frame-src https://calendly.com; connect-src 'self' https://calendly.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://formspree.io https://api.web3forms.com; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://assets.calendly.com; font-src 'self'; script-src 'self' https://assets.calendly.com; frame-src https://calendly.com; connect-src 'self' https://calendly.com">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="CCF Conseil">
@@ -22,9 +22,13 @@
 <meta property="og:image:alt" content="CCF Conseil — Conseil · Fiscalité · Entreprises">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Archivo:wght@400;500;600&display=swap">
+<link rel="alternate" hreflang="fr-FR" href="https://www.ccf-conseil.fr/methode.html">
+<link rel="alternate" hreflang="x-default" href="https://www.ccf-conseil.fr/methode.html">
+<link rel="preload" as="font" type="font/woff2" crossorigin
+      href="assets/fonts/fraunces-normal-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin
+      href="assets/fonts/archivo-normal-latin.woff2">
+<link rel="stylesheet" href="assets/css/fonts.css">
 <link rel="stylesheet" href="assets/css/style.css">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://www.ccf-conseil.fr/"},{"@type":"ListItem","position":2,"name":"Notre méthode","item":"https://www.ccf-conseil.fr/methode.html"}]}</script>
 </head>
@@ -83,7 +87,7 @@
       <span class="tl-n">01</span>
       <div>
         <span class="label" style="margin-bottom:12px">Analyser</span>
-        <h3>Comprendre votre situation et vos documents</h3>
+        <h2 class="tl-titre">Comprendre votre situation et vos documents</h2>
         <p class="mt-s">Nous partons de ce qui existe : vos documents comptables et fiscaux, les courriers reçus, l'historique de l'entreprise. Cette lecture prend du temps et c'est normal : un dossier mal compris au départ se défend mal ensuite.</p>
         <div class="mt"><ul class="checklist"><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Lecture des documents comptables et fiscaux</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Analyse des courriers et actes reçus</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Compréhension de l'activité et du contexte</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Identification des pièces manquantes</span></li></ul></div>
       </div>
@@ -91,7 +95,7 @@
       <span class="tl-n">02</span>
       <div>
         <span class="label" style="margin-bottom:12px">Identifier</span>
-        <h3>Repérer les enjeux, les risques et les priorités</h3>
+        <h2 class="tl-titre">Repérer les enjeux, les risques et les priorités</h2>
         <p class="mt-s">Tous les points d'un dossier n'ont pas le même poids. Nous distinguons ce qui est solide de ce qui est fragile, ce qui est urgent de ce qui peut attendre, et ce qui relève de notre périmètre de ce qui appelle un autre professionnel.</p>
         <div class="mt"><ul class="checklist"><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Hiérarchisation des points de vigilance</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Identification des délais applicables</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Évaluation des suites possibles</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Définition de la stratégie de réponse</span></li></ul></div>
       </div>
@@ -99,7 +103,7 @@
       <span class="tl-n">03</span>
       <div>
         <span class="label" style="margin-bottom:12px">Préparer</span>
-        <h3>Organiser les éléments et construire le dossier</h3>
+        <h2 class="tl-titre">Organiser les éléments et construire le dossier</h2>
         <p class="mt-s">Un dossier exploitable est un dossier où chaque affirmation est justifiée par une pièce. C'est la partie la plus longue du travail, et celle qui fait la différence devant l'administration.</p>
         <div class="mt"><ul class="checklist"><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Collecte et organisation des justificatifs</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Rédaction des observations argumentées</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Construction d'un dossier structuré</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Respect strict des délais</span></li></ul></div>
       </div>
@@ -107,7 +111,7 @@
       <span class="tl-n">04</span>
       <div>
         <span class="label" style="margin-bottom:12px">Coordonner</span>
-        <h3>Mobiliser le professionnel compétent</h3>
+        <h2 class="tl-titre">Mobiliser le professionnel compétent</h2>
         <p class="mt-s">Certaines étapes relèvent de l'avocat, du notaire ou de l'expert-comptable. Nous les mobilisons au bon moment, avec un dossier déjà préparé, ce qui réduit leur temps d'intervention et donc son coût.</p>
         <div class="mt"><ul class="checklist"><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Mise en relation avec l'avocat fiscaliste</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Lien avec l'expert-comptable</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Transmission d'un dossier prêt à l'emploi</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 12.5 5 5 11-11"/></svg><span>Suivi coordonné jusqu'à la clôture</span></li></ul></div>
       </div>
@@ -152,7 +156,7 @@
         </div>
 
         <div>
-          <h4>Expertises</h4>
+          <h2 class="footer-titre">Expertises</h2>
           <ul>
           <li><a href="expertises/conseil-fiscal.html">Conseil fiscal</a></li>
           <li><a href="expertises/controle-fiscal.html">Contrôle fiscal</a></li>
@@ -165,7 +169,7 @@
         </div>
 
         <div>
-          <h4>Le cabinet</h4>
+          <h2 class="footer-titre">Le cabinet</h2>
           <ul>
             <li><a href="cabinet.html">Notre approche</a></li>
             <li><a href="methode.html">Notre méthode</a></li>
@@ -176,7 +180,7 @@
         </div>
 
         <div>
-          <h4>Nous joindre</h4>
+          <h2 class="footer-titre">Nous joindre</h2>
           <ul>
             
             <li><a href="mailto:contact@ccf-conseil.fr">contact@ccf-conseil.fr</a></li>

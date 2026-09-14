@@ -205,14 +205,14 @@ def footer(root):
         </div>
 
         <div>
-          <h4>Expertises</h4>
+          <h2 class="footer-titre">Expertises</h2>
           <ul>
           {exp}
           </ul>
         </div>
 
         <div>
-          <h4>Le cabinet</h4>
+          <h2 class="footer-titre">Le cabinet</h2>
           <ul>
             <li><a href="{rel('cabinet.html', root)}">Notre approche</a></li>
             <li><a href="{rel('methode.html', root)}">Notre méthode</a></li>
@@ -223,7 +223,7 @@ def footer(root):
         </div>
 
         <div>
-          <h4>Nous joindre</h4>
+          <h2 class="footer-titre">Nous joindre</h2>
           <ul>
             {'<li><a href="tel:' + SITE['telephone_lien'] + '">' + SITE['telephone'] + '</a></li>' if a_tel() else ''}
             <li><a href="mailto:{SITE['email']}">{SITE['email']}</a></li>
@@ -315,13 +315,18 @@ def page_head(label, h1, texte, meta=None):
 </section>"""
 
 
-def index_rows(rows, root=""):
-    """Sommaire éditorial : numéro, titre, description, flèche."""
+def index_rows(rows, root="", niveau=3):
+    """Sommaire éditorial : numéro, titre, description, flèche.
+
+    `niveau` suit la hiérarchie de la page : h2 quand la liste vient juste après
+    le h1, h3 quand elle est introduite par un titre de section. L'apparence est
+    identique dans les deux cas, seule la sémantique change.
+    """
     out = []
     for i, (href, titre, desc) in enumerate(rows, 1):
         out.append(f"""<a class="index__row reveal" href="{rel(href, root)}">
       <span class="index__n">{i:02d}</span>
-      <h3>{titre}</h3>
+      <h{niveau} class="index__titre">{titre}</h{niveau}>
       <span class="index__desc">{desc}</span>
       <span class="index__go">{icon('arrow', w=1.2)}</span>
     </a>""")
@@ -508,6 +513,8 @@ def schema_org():
 "areaServed":{{"@type":"Country","name":"France"}},
 "priceRange":"€€","currenciesAccepted":"EUR",
 "slogan":"{SITE['signature']}",
+"logo":"{SITE['domaine']}/assets/img/og.png",
+"image":"{SITE['domaine']}/assets/img/og.png",
 "knowsAbout":{jsonlist(mots)},
 "makesOffer":[{offres_schema()}]}}
 </script>
@@ -515,6 +522,23 @@ def schema_org():
 {{"@context":"https://schema.org","@type":"WebSite","name":"{SITE['nom']}",
 "url":"{SITE['domaine']}","inLanguage":"fr-FR"}}
 </script>"""
+
+
+def article_schema(titre, resume, page):
+    """Page pédagogique : Google la traite comme un article de référence."""
+    return ('<script type="application/ld+json">'
+            '{"@context":"https://schema.org","@type":"Article",'
+            f'"headline":{jsonstr(titre)},"description":{jsonstr(resume)},'
+            f'"inLanguage":"fr-FR","datePublished":"{date.today().isoformat()}",'
+            f'"dateModified":"{date.today().isoformat()}",'
+            '"author":{"@type":"Organization","name":%s},'
+            '"publisher":{"@type":"Organization","name":%s,"logo":{"@type":"ImageObject","url":%s}},'
+            '"mainEntityOfPage":{"@type":"WebPage","@id":%s},'
+            '"image":%s}</script>'
+            % (jsonstr(SITE["nom"]), jsonstr(SITE["nom"]),
+               jsonstr(SITE["domaine"] + "/assets/img/og.png"),
+               jsonstr(SITE["domaine"] + "/" + page),
+               jsonstr(SITE["domaine"] + "/assets/img/og.png")))
 
 
 def breadcrumb_schema(items):
@@ -554,11 +578,6 @@ def faq_schema(pairs):
 # ---------------------------------------------------------------------------
 # Gabarit de page
 # ---------------------------------------------------------------------------
-FONTS = ("https://fonts.googleapis.com/css2?"
-         "family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500"
-         "&family=Archivo:wght@400;500;600&display=swap")
-
-
 def layout(path, titre, description, body, root="", schema=""):
     canonical = SITE["domaine"] + "/" + ("" if path == "index.html" else path)
     return f"""<!DOCTYPE html>
@@ -572,7 +591,7 @@ def layout(path, titre, description, body, root="", schema=""):
 <meta name="robots" content="{'noindex, follow' if path == '404.html' else 'index, follow'}">
 <meta name="theme-color" content="#0B1B30">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://formspree.io https://api.web3forms.com; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://assets.calendly.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://assets.calendly.com; frame-src https://calendly.com; connect-src 'self' https://calendly.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://formspree.io https://api.web3forms.com; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://assets.calendly.com; font-src 'self'; script-src 'self' https://assets.calendly.com; frame-src https://calendly.com; connect-src 'self' https://calendly.com">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="{SITE['nom']}">
@@ -585,9 +604,13 @@ def layout(path, titre, description, body, root="", schema=""):
 <meta property="og:image:alt" content="{SITE['nom']} — {SITE['baseline']}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="{rel('assets/img/favicon.svg', root)}" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="{FONTS}">
+<link rel="alternate" hreflang="fr-FR" href="{canonical}">
+<link rel="alternate" hreflang="x-default" href="{canonical}">
+<link rel="preload" as="font" type="font/woff2" crossorigin
+      href="{rel('assets/fonts/fraunces-normal-latin.woff2', root)}">
+<link rel="preload" as="font" type="font/woff2" crossorigin
+      href="{rel('assets/fonts/archivo-normal-latin.woff2', root)}">
+<link rel="stylesheet" href="{rel('assets/css/fonts.css', root)}">
 <link rel="stylesheet" href="{rel('assets/css/style.css', root)}">
 {schema}
 </head>
@@ -830,7 +853,7 @@ def page_expertises_index():
 
 <section class="section">
   <div class="container">
-    {index_rows([(e['slug'] + '.html', e['titre'], e['resume']) for e in EXPERTISES])}
+    {index_rows([(e['slug'] + '.html', e['titre'], e['resume']) for e in EXPERTISES], niveau=2)}
   </div>
 </section>
 
@@ -973,7 +996,7 @@ def page_methode():
       <span class="tl-n">{i:02d}</span>
       <div>
         <span class="label" style="margin-bottom:12px">{t}</span>
-        <h3>{s}</h3>
+        <h2 class="tl-titre">{s}</h2>
         <p class="mt-s">{x}</p>
         <div class="mt">{checklist(pts)}</div>
       </div>
@@ -1004,7 +1027,7 @@ def page_procedure():
     items = "".join(f"""<div class="tl-item reveal">
       <span class="tl-n">{i:02d}</span>
       <div>
-        <h3>{titre}</h3>
+        <h2 class="tl-titre">{titre}</h2>
         <p class="mt-s">{texte}</p>
         <div class="callout{' callout--alert' if ton == 'alert' else ''}">
           <b>{'Attention' if ton == 'alert' else 'À savoir'}</b>{note}
@@ -1076,7 +1099,13 @@ def page_procedure():
                   "Proposition de rectification, réclamation contentieuse, recours hiérarchique, "
                   "tribunal administratif : les huit étapes et le délai applicable à chacune.",
                   body, "", faq_schema(faq) + breadcrumb_schema(
-                      [("Accueil", ""), ("La procédure fiscale", "procedure-fiscale.html")]))
+                      [("Accueil", ""), ("La procédure fiscale", "procedure-fiscale.html")])
+                  + article_schema(
+                      "La procédure fiscale, étape par étape",
+                      "Les huit étapes de la procédure fiscale, de la proposition de "
+                      "rectification à la décision du tribunal administratif, et le délai "
+                      "applicable à chacune.",
+                      "procedure-fiscale.html"))
 
 
 def page_ressources():
@@ -1100,7 +1129,7 @@ def page_ressources():
     ]
     rows = "".join(f"""<div class="index__row index__row--soon">
       <span class="index__n">{i:02d}</span>
-      <h3>{t}</h3>
+      <h2 class="index__titre">{t}</h2>
       <span class="index__desc">{d}</span>
       <span class="index__soon">À venir</span>
     </div>""" for i, (t, d) in enumerate(a_venir, 2))
@@ -1116,7 +1145,7 @@ def page_ressources():
     <div class="index">
       <a class="index__row reveal" href="../procedure-fiscale.html">
         <span class="index__n">01</span>
-        <h3>La procédure fiscale étape par étape</h3>
+        <h2 class="index__titre">La procédure fiscale étape par étape</h2>
         <span class="index__desc">Les huit étapes, de la proposition de rectification au tribunal
           administratif, avec le délai applicable à chacune.</span>
         <span class="index__go">{icon('arrow', w=1.2)}</span>
@@ -1392,7 +1421,7 @@ def page_plan():
   <li><a href="confidentialite.html">Politique de confidentialité</a></li>
 </ul>
 """
-    return page_prose("plan-du-site.html", f"Plan du site — {SITE['nom']}", "Plan du site",
+    return page_prose("plan-du-site.html", seo_titre("Plan du site : toutes les pages"), "Plan du site",
                       "Navigation",
                       "Toutes les pages du site CCF Conseil : expertises, méthode, procédure "
                       "fiscale, ressources, contact et informations légales.", contenu)
@@ -1414,7 +1443,7 @@ def page_404():
             ("/expertises/index.html", "Nos expertises", "Les sept pôles d'accompagnement du cabinet."),
             ("/procedure-fiscale.html", "La procédure fiscale", "Les huit étapes et leurs délais."),
             ("/plan-du-site.html", "Plan du site", "Toutes les pages en un coup d'œil."),
-          ])}
+          ], niveau=3)}
         </div>
       </div>
       <div class="panel reveal reveal-d2">
@@ -1465,7 +1494,9 @@ def sitemap(pages):
         loc = SITE["domaine"] + "/" + ("" if p == "index.html" else p)
         prio = "1.0" if p == "index.html" else (
             "0.9" if p.startswith("expertises/") or p == "procedure-fiscale.html" else "0.7")
+        freq = "weekly" if p in ("index.html", "ressources/index.html") else "monthly"
         urls.append(f"  <url>\n    <loc>{loc}</loc>\n    <lastmod>{today}</lastmod>"
+                    f"\n    <changefreq>{freq}</changefreq>"
                     f"\n    <priority>{prio}</priority>\n  </url>")
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'

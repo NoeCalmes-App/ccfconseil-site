@@ -7,26 +7,69 @@ Hébergeable gratuitement sur GitHub Pages.
 
 ## Démarrer
 
-Ouvrir `index.html` dans un navigateur suffit. Pour un rendu identique à la production
-(chemins absolus, polices), servir le dossier :
-
 ```bash
-python3 -m http.server 8000
-# puis http://localhost:8000
+npm run dev
 ```
+
+C'est tout. Aucun `npm install` : le serveur de développement n'utilise que les modules
+fournis avec Node, il n'y a donc **aucune dépendance à installer, à mettre à jour ou à
+auditer**. Un dossier `node_modules` absent, c'est aussi zéro faille héritée d'un paquet
+tiers.
+
+Il ouvre `http://localhost:5173` et affiche aussi une adresse réseau, pour tester sur un
+téléphone connecté au même wifi. À chaque sauvegarde d'un fichier source, les pages se
+régénèrent et le navigateur se rafraîchit tout seul. Les en-têtes de sécurité de la
+production sont appliqués en local, et une URL inconnue renvoie la vraie page 404 avec le
+bon code HTTP : ce que vous voyez est ce que verra le visiteur.
+
+Port occupé : `PORT=5174 npm run dev`.
+
+| Commande | Effet |
+|---|---|
+| `npm run dev` | Serveur local, régénération et rafraîchissement automatiques |
+| `npm run build` | Régénère les 19 pages |
+| `npm run audit` | Contrôle référencement, liens, sécurité et contenu |
+| `npm run check` | Régénère puis audite — à lancer avant chaque mise en ligne |
+| `npm run serve` | Serveur statique simple, sans outillage |
+
+### L'audit
+
+`npm run audit` parcourt les 19 pages et vérifie, sans rien installer :
+
+- **Référencement** — longueur des titres et des descriptions, unicité du `h1`, continuité
+  de la hiérarchie de titres, présence de l'URL canonique, de l'image de partage et de
+  l'attribut de langue, et **validité JSON de chaque bloc de données structurées**.
+- **Liens** — chaque lien interne et chaque ressource pointent vers un fichier qui existe.
+- **Sécurité** — politique de sécurité du contenu présente, politique de référent, aucun
+  `target="_blank"` sans `rel="noopener"`, aucun stockage navigateur.
+- **Contenu** — signale les valeurs de démonstration encore en place (`À REMPLACER`,
+  `à compléter`, le domaine d'exemple). C'est le garde-fou contre une mise en ligne avec
+  le faux code postal.
+
+Le script sort en code 1 s'il trouve une erreur bloquante : utilisable tel quel dans une
+action GitHub.
 
 ## Régénérer les pages
 
 Les pages sont produites par `build.py` afin de ne pas dupliquer l'en-tête, le pied de
-page et les métadonnées dans 19 fichiers. **Le site livré reste du HTML pur** : le script
-n'est nécessaire que pour modifier une structure commune.
+page et les métadonnées dans 19 fichiers. **Le site livré reste du HTML pur** : ni Node ni
+Python ne tournent en production, l'hébergeur ne sert que des fichiers.
 
-```bash
-python3 build.py
-```
+Pour un changement ponctuel (un mot, une coordonnée), éditer directement le fichier HTML
+concerné est parfaitement valable — mais il sera écrasé au prochain `npm run build`.
 
-Pour un changement ponctuel (un mot, un numéro), éditer directement le fichier HTML
-concerné est parfaitement valable.
+## Polices
+
+Fraunces et Archivo sont **auto-hébergées** dans `assets/fonts` (licence SIL Open Font),
+sous-ensembles latin et latin-ext uniquement. Trois raisons, et chacune se suffirait :
+
+- **aucune requête vers un tiers au chargement** — le site n'appelle strictement rien
+  d'extérieur tant que le visiteur ne clique pas sur le calendrier, ce qui simplifie
+  radicalement la conformité RGPD ;
+- **affichage plus rapide** — la police part du même serveur que la page, sans résolution
+  DNS ni poignée de main TLS supplémentaires ;
+- **politique de sécurité du contenu plus stricte** — `font-src 'self'`, aucun domaine
+  externe autorisé.
 
 ---
 

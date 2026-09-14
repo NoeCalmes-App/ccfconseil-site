@@ -817,3 +817,23 @@ thead th {
 /* Contact en en-tête : l'adresse ne doit jamais se couper */
 .header-contact { max-width: 24ch; overflow: hidden; text-overflow: ellipsis; }
 .panel__alt a { white-space: nowrap; }
+
+/* --------------------------------------------------------------------------
+   22. Niveaux de titre
+   La hiérarchie HTML suit le sens du document ; l'apparence, elle, reste
+   attachée à la classe. Un h2 dans un sommaire se lit comme un h3.
+   -------------------------------------------------------------------------- */
+.index__titre, .tl-titre {
+  font-family: var(--display); font-weight: 500;
+  font-size: clamp(1.18rem, 1.7vw, 1.4rem); line-height: 1.24;
+  letter-spacing: -.01em; color: var(--navy); margin: 0;
+}
+.section--navy .index__titre { color: #fff; }
+.tl-titre { margin-bottom: 12px; }
+.tl-item--wide .tl-titre { margin-bottom: 0; }
+
+.footer-titre {
+  font-family: var(--sans); font-size: .655rem; font-weight: 600;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--brass-lt);
+  margin: 0 0 22px; line-height: 1.4;
+}
