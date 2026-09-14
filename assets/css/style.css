@@ -857,3 +857,13 @@ thead th {
 .hero, .page-head, .cta, .crumb, .site-header, .site-footer {
   content-visibility: visible;
 }
+
+/* --------------------------------------------------------------------------
+   24. En-têtes de page plus compacts
+   Un titre qui occupe tout l'écran oblige à défiler avant de voir le contenu.
+   Sur les pages intérieures, le titre annonce ; il ne doit pas monopoliser.
+   -------------------------------------------------------------------------- */
+.page-head__inner { padding-block: clamp(38px, 4.6vw, 64px); }
+.page-head h1 { font-size: clamp(2.1rem, 4.4vw, 3.3rem); margin-bottom: 20px; }
+.page-head p { font-size: clamp(1rem, 1.3vw, 1.1rem); }
+.page-head__meta { margin-top: 26px; padding-top: 20px; }

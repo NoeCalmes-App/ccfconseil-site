@@ -1,0 +1,74 @@
+[
+  {
+    "titre": "Réception de la proposition de rectification",
+    "texte": "L'administration vous adresse par courrier recommandé une proposition de rectification, souvent appelée « 3924 ». Elle détaille les redressements envisagés, leur motif et leur montant.",
+    "label": "Délai",
+    "valeur": "30 jours",
+    "source": "à compter de la réception",
+    "ton": "alert",
+    "note": "L'absence de réponse dans ce délai vaut acceptation tacite des rectifications proposées. Une prolongation de 30 jours peut être demandée."
+  },
+  {
+    "titre": "Réponse du contribuable",
+    "texte": "Vous répondez par écrit en présentant vos observations et en joignant toutes les pièces utiles. C'est l'étape qui fixe le cadre de toute la suite : la réponse doit être argumentée, documentée et complète.",
+    "label": "Délai",
+    "valeur": "30 jours",
+    "source": "prolongeable de 30 jours sur demande",
+    "ton": "info",
+    "note": "Objectif : convaincre l'administration point par point et éviter tout redressement injustifié."
+  },
+  {
+    "titre": "Réponse de l'administration",
+    "texte": "Le service examine vos observations et vous notifie sa position par écrit et de manière motivée. Il peut abandonner, réduire ou maintenir tout ou partie des rectifications.",
+    "label": "Délai",
+    "valeur": "60 jours",
+    "source": "en principe, pour les PME",
+    "ton": "info",
+    "note": "La réponse est notifiée par courrier motivé. Elle précise ce qui est abandonné et ce qui est maintenu."
+  },
+  {
+    "titre": "Mise en recouvrement",
+    "texte": "Les sommes maintenues sont mises en recouvrement. C'est à ce moment que les mesures de recouvrement peuvent être engagées si rien n'est fait.",
+    "label": "À savoir",
+    "valeur": "Sursis",
+    "source": "de paiement possible",
+    "ton": "alert",
+    "note": "Une demande de sursis de paiement, fondée sur l'article L. 277 du Livre des procédures fiscales, suspend les mesures de recouvrement le temps de la contestation."
+  },
+  {
+    "titre": "Réclamation contentieuse",
+    "texte": "Vous adressez une réclamation écrite au service des impôts pour contester les impositions maintenues. C'est le passage obligé avant toute saisine du juge.",
+    "label": "Réponse",
+    "valeur": "6 mois",
+    "source": "délai de réponse de l'administration",
+    "ton": "info",
+    "note": "L'administration doit répondre de manière explicite et motivée : acceptation, rejet total ou rejet partiel."
+  },
+  {
+    "titre": "Recours hiérarchique",
+    "texte": "Voie amiable et facultative : vous demandez le réexamen de votre situation par le supérieur hiérarchique de l'auteur de la décision, puis le cas échéant par l'interlocuteur départemental.",
+    "label": "Réponse",
+    "valeur": "Variable",
+    "source": "voie amiable, sans délai imposé",
+    "ton": "info",
+    "note": "Cette étape permet souvent de trouver une solution sans aller devant le tribunal."
+  },
+  {
+    "titre": "Recours contentieux",
+    "texte": "Si le désaccord persiste, vous saisissez le tribunal administratif. La procédure est écrite et contradictoire, avec des échanges de mémoires et, le cas échéant, une audience.",
+    "label": "Délai",
+    "valeur": "2 mois",
+    "source": "après la décision de rejet, ou après 6 mois de silence",
+    "ton": "alert",
+    "note": "Passé ce délai, la contestation n'est plus recevable. L'assistance d'un avocat fiscaliste est vivement recommandée à ce stade."
+  },
+  {
+    "titre": "Décision du tribunal",
+    "texte": "Le tribunal rend son jugement : il peut rejeter la demande, l'accueillir totalement ou partiellement. Un appel reste possible devant la cour administrative d'appel.",
+    "label": "Instruction",
+    "valeur": "8 à 18 mois",
+    "source": "durée moyenne constatée",
+    "ton": "info",
+    "note": "Le délai d'appel devant la cour administrative d'appel est en principe de deux mois."
+  }
+]

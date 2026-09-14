@@ -110,7 +110,15 @@ au menu une fois les articles publiés, ajouter une ligne à `NAV_ITEMS` dans `b
 │   ├── css/style.css             Feuille de style unique et commentée
 │   ├── js/main.js                Menu, apparitions, formulaires
 │   └── img/favicon.svg
+├── content/                      LA BASE DE CONTENU (JSON)
+│   ├── cabinet.json
+│   ├── expertises.json
+│   ├── procedure.json
+│   └── ressources.json
+├── admin/                        Interface d'administration (noindex)
+├── tools/                        Serveur de développement et audit
 ├── build.py                      Générateur
+├── content.py                    Chargement de la base
 ├── sitemap.xml
 ├── robots.txt
 └── .nojekyll                     Indispensable sur GitHub Pages
@@ -118,16 +126,66 @@ au menu une fois les articles publiés, ajouter une ligne à `NAV_ITEMS` dans `b
 
 ---
 
+## La base de contenu
+
+Tout le texte du site vit dans `content/`, en JSON :
+
+```
+content/
+├── cabinet.json      Coordonnées et réglages du cabinet
+├── expertises.json   Les sept pôles : titres, résumés, étapes, questions
+├── procedure.json    Les huit étapes de la procédure fiscale et leurs délais
+└── ressources.json   Les fiches pratiques
+```
+
+C'est la base de données du site. Trois façons de la modifier :
+
+**1. Depuis l'interface d'administration** — `https://<le-domaine>/admin`. La cliente se
+connecte avec son compte GitHub et modifie ses textes dans des formulaires, sans voir une
+ligne de code. Chaque enregistrement crée un commit ; le site se régénère à la publication.
+
+**2. En éditant les fichiers JSON** à la main, puis `npm run build`.
+
+**3. Par un script**, si un jour il faut importer des données en masse.
+
+Pourquoi ce choix plutôt qu'une vraie base serveur : le site reste **entièrement statique**.
+Le JSON est lu au moment de la génération, jamais par le navigateur du visiteur. Résultat :
+rien à héberger, rien à sauvegarder, aucune faille d'injection possible, aucun abonnement —
+et l'historique des modifications, avec l'auteur et la date de chaque changement, c'est
+celui de git. Une base MySQL sur ce site n'apporterait rien de plus et coûterait un serveur,
+des sauvegardes et une surface d'attaque.
+
+### Activer l'interface d'administration
+
+1. Renseigner `backend.repo` dans `admin/config.yml` (`utilisateur/ccfconseil-web`).
+2. Créer une application OAuth GitHub (*Settings → Developer settings → OAuth Apps*).
+3. Déclarer l'URL de rappel selon l'hébergeur retenu :
+   - **Cloudflare Pages ou Netlify** : l'authentification est fournie, rien de plus à faire ;
+   - **GitHub Pages** : il faut un relais OAuth — un Worker Cloudflare gratuit suffit.
+
+Tant que ce n'est pas configuré, `/admin` reste inaccessible et le site fonctionne
+normalement : l'édition se fait alors dans les fichiers JSON.
+
+Le dossier est exclu des moteurs de recherche (`robots.txt` et `noindex`).
+
+## Ajouter un pôle d'expertise
+
+Ajouter une entrée dans `content/expertises.json` (ou depuis `/admin`), puis
+`npm run build`. La page, l'entrée du sommaire, la ligne du pied de page, le choix dans le
+formulaire de rendez-vous, les données structurées et le `sitemap.xml` se mettent à jour
+seuls.
+
 ## À compléter avant la mise en ligne
 
-Tout est regroupé dans le dictionnaire `SITE` en haut de `build.py`. Les valeurs marquées
-`À REMPLACER` doivent être renseignées, puis le site régénéré.
+Tout est dans `content/cabinet.json`, modifiable depuis `/admin`.
 
 | Champ | Utilisé pour |
 |---|---|
 | `email` | En-tête, pied de page, barre mobile, formulaires, mentions légales |
 | `calendly` | Page de rendez-vous |
+| `ville` | **S'insère dans les 19 titres de page.** Premier levier du référencement local. |
 | `telephone`, `telephone_lien` | **Laissés vides** : tant qu'ils le sont, l'email prend leur place partout. Dès qu'ils sont renseignés, le téléphone réapparaît seul dans l'en-tête, le pied de page, la barre mobile et les données structurées. |
+| `adresse`, `code_postal` | **Laissés vides** : les blocs « Au cabinet » disparaissent d'eux-mêmes de la page contact, du pied de page et de la page rendez-vous. |
 | `adresse`, `code_postal`, `ville` | Pied de page, contact, **référencement local** |
 | `siren`, `forme` | Mentions légales |
 | `domaine` | URL canoniques, `sitemap.xml`, `robots.txt` |

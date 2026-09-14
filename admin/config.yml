@@ -1,0 +1,193 @@
+# ---------------------------------------------------------------------------
+# Base de contenu CCF Conseil
+#
+# Chaque collection ci-dessous correspond à un fichier de content/.
+# Modifier un champ ici écrit dans le fichier JSON, crée un commit,
+# et déclenche la régénération du site.
+#
+# À renseigner avant la première utilisation :
+#   · backend.repo   → utilisateur/depot sur GitHub
+#   · backend.branch → la branche publiée (main)
+# ---------------------------------------------------------------------------
+
+backend:
+  name: github
+  repo: UTILISATEUR/ccfconseil-web        # À REMPLACER
+  branch: main
+  commit_messages:
+    update: 'Contenu : mise à jour de {{collection}}'
+    delete: 'Contenu : suppression dans {{collection}}'
+
+locale: fr
+site_url: https://www.ccf-conseil.fr
+display_url: https://www.ccf-conseil.fr
+media_folder: assets/img
+public_folder: /assets/img
+
+collections:
+  # -------------------------------------------------------------------------
+  - name: cabinet
+    label: Coordonnées du cabinet
+    description: >-
+      Les informations affichées partout sur le site. La ville est la donnée
+      la plus importante : elle s'insère automatiquement dans tous les titres
+      et conditionne le référencement local.
+    files:
+      - name: coordonnees
+        label: Coordonnées
+        file: content/cabinet.json
+        fields:
+          - { name: nom, label: Nom du cabinet, widget: string }
+          - { name: baseline, label: Baseline, widget: string }
+          - { name: signature, label: Signature, widget: string }
+          - { name: domaine, label: Adresse du site, widget: string }
+          - { name: email, label: Adresse email, widget: string }
+          - name: telephone
+            label: Téléphone affiché
+            widget: string
+            required: false
+            hint: Laisser vide tant qu'il n'y a pas de numéro — l'email prend sa place.
+          - name: telephone_lien
+            label: Téléphone au format international
+            widget: string
+            required: false
+            hint: "Exemple : +33565601234"
+          - { name: adresse, label: Adresse, widget: string, required: false }
+          - { name: code_postal, label: Code postal, widget: string, required: false }
+          - name: ville
+            label: Ville
+            widget: string
+            required: false
+            hint: S'ajoute automatiquement à tous les titres de page.
+          - { name: siren, label: SIREN, widget: string, required: false }
+          - { name: forme, label: Forme juridique, widget: string, required: false }
+          - { name: horaires, label: Horaires, widget: string }
+          - name: calendly
+            label: Lien de l'agenda en ligne
+            widget: string
+            hint: Adresse de l'événement de réservation.
+          - name: form_endpoint
+            label: Destination du formulaire de contact
+            widget: string
+            required: false
+            hint: Laisser vide tant que le service d'envoi n'est pas configuré.
+
+  # -------------------------------------------------------------------------
+  - name: expertises
+    label: Pôles d'expertise
+    description: >-
+      Chaque pôle génère sa propre page, son entrée de menu et sa ligne dans
+      le sommaire. Ajouter un pôle suffit à créer la page correspondante.
+    files:
+      - name: liste
+        label: Les pôles
+        file: content/expertises.json
+        fields:
+          - name: expertises
+            label: Pôles
+            label_singular: Pôle
+            widget: list
+            summary: '{{fields.titre}}'
+            fields:
+              - name: slug
+                label: Identifiant d'URL
+                widget: string
+                pattern: ['^[a-z0-9-]+$', 'Lettres minuscules, chiffres et tirets uniquement']
+                hint: Détermine l'adresse de la page. Ne plus le changer une fois en ligne.
+              - { name: nav, label: Nom court (menu), widget: string }
+              - { name: titre, label: Titre de la page, widget: string }
+              - name: titre_seo
+                label: Titre pour Google
+                widget: string
+                hint: Mot-clé en premier, 28 à 45 caractères. La ville et le nom du cabinet s'ajoutent seuls.
+              - { name: accroche, label: Accroche, widget: string }
+              - name: icone
+                label: Icône
+                widget: select
+                options: [doc, search, users, brief, scale, shield, target, hand, clock]
+              - name: resume
+                label: Résumé
+                widget: text
+                hint: Affiché dans les sommaires. Une à deux phrases.
+              - name: meta
+                label: Description pour Google
+                widget: text
+                hint: 110 à 165 caractères.
+              - { name: intro, label: Texte d'introduction, widget: text }
+              - { name: tags, label: Mots-clés affichés, widget: list, field: { name: tag, label: Mot-clé, widget: string } }
+              - name: etapes
+                label: Déroulé
+                widget: list
+                summary: '{{fields.titre}}'
+                fields:
+                  - { name: titre, label: Étape, widget: string }
+                  - { name: texte, label: Description, widget: text }
+              - { name: points, label: Ce que nous prenons en charge, widget: list, field: { name: point, label: Point, widget: string } }
+              - name: faq
+                label: Questions fréquentes
+                widget: list
+                summary: '{{fields.question}}'
+                fields:
+                  - { name: question, label: Question, widget: string }
+                  - { name: reponse, label: Réponse, widget: text }
+
+  # -------------------------------------------------------------------------
+  - name: procedure
+    label: Procédure fiscale
+    description: Les étapes et les délais affichés sur la page pédagogique.
+    files:
+      - name: etapes
+        label: Étapes
+        file: content/procedure.json
+        fields:
+          - name: procedure
+            label: Étapes
+            label_singular: Étape
+            widget: list
+            summary: '{{fields.titre}} — {{fields.valeur}}'
+            fields:
+              - { name: titre, label: Titre de l'étape, widget: string }
+              - { name: texte, label: Description, widget: text }
+              - name: label
+                label: Intitulé du délai
+                widget: select
+                options: [Délai, Réponse, Instruction, À savoir]
+              - { name: valeur, label: Délai, widget: string, hint: "Exemple : 30 jours" }
+              - { name: source, label: Point de départ, widget: string }
+              - name: ton
+                label: Niveau d'alerte
+                widget: select
+                options:
+                  - { label: Information, value: info }
+                  - { label: Attention, value: alert }
+              - { name: note, label: Encadré, widget: text }
+
+  # -------------------------------------------------------------------------
+  - name: ressources
+    label: Ressources
+    description: >-
+      Les fiches pratiques. Une fiche non publiée s'affiche en « À venir » :
+      utile pour annoncer un contenu avant de l'écrire.
+    files:
+      - name: fiches
+        label: Fiches
+        file: content/ressources.json
+        fields:
+          - name: ressources
+            label: Fiches
+            label_singular: Fiche
+            widget: list
+            summary: '{{fields.titre}}'
+            fields:
+              - { name: titre, label: Titre, widget: string }
+              - { name: resume, label: Résumé, widget: text }
+              - name: lien
+                label: Lien
+                widget: string
+                required: false
+                hint: Adresse de la fiche. Laisser vide si elle n'est pas encore écrite.
+              - name: publie
+                label: Publiée
+                widget: boolean
+                default: false
+                hint: Décochée, la fiche s'affiche en « À venir » et n'est pas cliquable.

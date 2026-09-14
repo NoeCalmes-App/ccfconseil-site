@@ -1,0 +1,355 @@
+[
+  {
+    "slug": "conseil-fiscal",
+    "nav": "Conseil fiscal",
+    "titre": "Conseil fiscal",
+    "titre_seo": "Conseil fiscal pour entreprises",
+    "accroche": "Anticiper pour mieux décider",
+    "icone": "doc",
+    "resume": "Analyse de votre situation fiscale, identification des points de vigilance et préparation des dossiers.",
+    "meta": "Analyse de votre situation fiscale, identification des risques et préparation des dossiers. Premier échange de 15 minutes offert.",
+    "intro": "Une décision fiscale se prépare rarement dans l'urgence. Analyser la situation en amont, repérer les points sensibles et documenter les choix retenus évite la plupart des difficultés qui surgissent des années plus tard, au moment d'un contrôle.",
+    "tags": [
+      "Analyse",
+      "Points de vigilance",
+      "Préparation de dossier"
+    ],
+    "etapes": [
+      {
+        "titre": "Analyser la situation",
+        "texte": "Lecture de vos documents comptables et fiscaux, compréhension de l'activité et du contexte de l'entreprise."
+      },
+      {
+        "titre": "Identifier les risques",
+        "texte": "Repérage des points susceptibles d'être remis en cause et hiérarchisation selon leur importance."
+      },
+      {
+        "titre": "Préparer les éléments",
+        "texte": "Organisation des pièces justificatives et construction d'un dossier documenté et exploitable."
+      },
+      {
+        "titre": "Coordonner si nécessaire",
+        "texte": "Mobilisation de l'expert-comptable, de l'avocat fiscaliste ou du professionnel compétent selon le dossier."
+      }
+    ],
+    "points": [
+      "Analyse de la situation fiscale de l'entreprise et du dirigeant",
+      "Identification des points de vigilance avant qu'ils ne deviennent des litiges",
+      "Préparation et organisation des dossiers et des justificatifs",
+      "Suivi administratif des échanges avec l'administration",
+      "Coordination avec les professionnels compétents lorsque le dossier l'exige"
+    ],
+    "faq": [
+      {
+        "question": "À quel moment faut-il consulter ?",
+        "reponse": "Le plus tôt possible. Avant une opération importante, avant une cession, avant un changement de structure. Une situation analysée en amont coûte toujours moins cher qu'un dossier repris après une notification."
+      },
+      {
+        "question": "Intervenez-vous auprès de l'administration ?",
+        "reponse": "Nous préparons les dossiers, organisons les pièces et assurons le suivi administratif des échanges. Lorsque la situation appelle une intervention juridique, nous coordonnons l'avocat fiscaliste compétent."
+      }
+    ]
+  },
+  {
+    "slug": "controle-fiscal",
+    "nav": "Contrôle fiscal",
+    "titre": "Contrôle fiscal",
+    "titre_seo": "Contrôle fiscal : se faire accompagner",
+    "accroche": "Vous accompagner à chaque étape",
+    "icone": "search",
+    "resume": "Analyse des demandes de l'administration, organisation des pièces, préparation du dossier et suivi des échanges.",
+    "meta": "Avis de vérification, proposition de rectification : organisation des pièces et réponse dans les délais. 15 minutes offertes.",
+    "intro": "Un avis de vérification n'est pas une sanction, c'est le début d'une procédure encadrée par des délais stricts. Ce qui fait la différence, c'est la qualité des pièces réunies et la rigueur des réponses apportées dans les temps.",
+    "tags": [
+      "Avis de vérification",
+      "Délai de 30 jours",
+      "Préparation de la réponse"
+    ],
+    "etapes": [
+      {
+        "titre": "Demande de l'administration",
+        "texte": "Lecture attentive de l'avis reçu, identification précise de ce qui est demandé et des exercices concernés."
+      },
+      {
+        "titre": "Pièces & justificatifs",
+        "texte": "Recensement, tri et organisation des documents à produire, en identifiant ce qui manque."
+      },
+      {
+        "titre": "Préparation du dossier",
+        "texte": "Construction d'une réponse argumentée, documentée et complète, point par point."
+      },
+      {
+        "titre": "Suivi administratif",
+        "texte": "Respect des délais, suivi des échanges et préparation des étapes suivantes."
+      }
+    ],
+    "points": [
+      "Analyse de l'avis de vérification et des demandes formulées",
+      "Recensement et organisation des pièces justificatives",
+      "Préparation des observations dans le délai imparti",
+      "Suivi des échanges avec le service vérificateur",
+      "Coordination d'un avocat fiscaliste en cas de contentieux"
+    ],
+    "faq": [
+      {
+        "question": "Combien de temps ai-je pour répondre ?",
+        "reponse": "En principe 30 jours à compter de la réception de la proposition de rectification, avec une prolongation de 30 jours possible sur demande. L'absence de réponse dans ce délai vaut acceptation tacite des rectifications proposées."
+      },
+      {
+        "question": "Puis-je répondre moi-même ?",
+        "reponse": "Rien ne l'interdit. Mais une réponse doit être argumentée, documentée et complète : c'est elle qui fixe le cadre de toute la suite de la procédure. Une réponse improvisée est difficile à rattraper ensuite."
+      }
+    ]
+  },
+  {
+    "slug": "controle-urssaf",
+    "nav": "Contrôle URSSAF",
+    "titre": "Contrôle URSSAF",
+    "titre_seo": "Contrôle URSSAF : préparer son dossier",
+    "accroche": "Analyse · Préparation · Suivi",
+    "icone": "users",
+    "resume": "Étude des documents reçus, préparation des éléments demandés et analyse des observations.",
+    "meta": "Étude des documents, préparation des éléments demandés et réponse à la lettre d'observations. Premier échange offert.",
+    "intro": "Le contrôle URSSAF suit sa propre logique et ses propres délais. Les points examinés — frais professionnels, avantages en nature, statut des intervenants, DSN — appellent des justificatifs précis qu'il vaut mieux réunir avant la visite que pendant.",
+    "tags": [
+      "Avis de contrôle",
+      "Lettre d'observations",
+      "Mise en demeure"
+    ],
+    "etapes": [
+      {
+        "titre": "Documents reçus",
+        "texte": "Analyse de l'avis de contrôle et du périmètre annoncé par l'inspecteur."
+      },
+      {
+        "titre": "Éléments demandés",
+        "texte": "Préparation des pièces sociales et de paie attendues, dans la forme demandée."
+      },
+      {
+        "titre": "Observations",
+        "texte": "Étude de la lettre d'observations et préparation d'une réponse motivée."
+      },
+      {
+        "titre": "Redressement",
+        "texte": "Analyse du redressement notifié et préparation des suites, recours compris."
+      }
+    ],
+    "points": [
+      "Analyse de l'avis de contrôle et de son périmètre",
+      "Préparation des éléments de paie et des justificatifs sociaux",
+      "Réponse argumentée à la lettre d'observations",
+      "Analyse de la mise en demeure et des suites possibles",
+      "Suivi administratif jusqu'à la clôture du dossier"
+    ],
+    "faq": [
+      {
+        "question": "Quels points sont le plus souvent contrôlés ?",
+        "reponse": "Les frais professionnels, les avantages en nature, le traitement des indemnités de rupture, le statut des intervenants extérieurs et la cohérence entre la paie et les déclarations sociales."
+      },
+      {
+        "question": "Quel délai pour répondre aux observations ?",
+        "reponse": "En général 30 jours à compter de la réception de la lettre d'observations. Ce délai est court : mieux vaut préparer les éléments pendant le contrôle plutôt qu'après."
+      }
+    ]
+  },
+  {
+    "slug": "entreprises-en-difficulte",
+    "nav": "Entreprises en difficulté",
+    "titre": "Entreprises en difficulté",
+    "titre_seo": "Entreprise en difficulté : agir à temps",
+    "accroche": "Intervenir avec méthode et anticipation",
+    "icone": "shield",
+    "resume": "Préparation administrative des dossiers de prévention, de sauvegarde et de redressement judiciaire.",
+    "meta": "Prévention, sauvegarde, redressement judiciaire : préparation administrative des dossiers et coordination des professionnels.",
+    "intro": "Les difficultés d'une entreprise se traitent d'autant mieux qu'elles sont prises tôt. Entre le moment où la trésorerie se tend et celui où la cessation de paiements est constatée, il existe une fenêtre pendant laquelle beaucoup de solutions restent ouvertes.",
+    "tags": [
+      "Prévention",
+      "Sauvegarde",
+      "Redressement judiciaire"
+    ],
+    "etapes": [
+      {
+        "titre": "Prévention",
+        "texte": "Analyse de la situation, préparation des éléments financiers et des demandes de délais."
+      },
+      {
+        "titre": "Sauvegarde",
+        "texte": "Constitution du dossier administratif et organisation des pièces à produire."
+      },
+      {
+        "titre": "Redressement judiciaire",
+        "texte": "Préparation des documents nécessaires et suivi administratif de la procédure."
+      }
+    ],
+    "points": [
+      "Analyse de la situation financière et de son évolution",
+      "Préparation des demandes de délais de paiement",
+      "Constitution des dossiers de prévention et de sauvegarde",
+      "Préparation administrative des documents de procédure",
+      "Coordination avec l'avocat et les mandataires, dans les limites légalement autorisées"
+    ],
+    "faq": [
+      {
+        "question": "Est-il trop tard pour agir ?",
+        "reponse": "Rarement, mais chaque semaine compte. Plus la démarche est engagée tôt, plus les dispositifs de prévention restent accessibles et efficaces."
+      },
+      {
+        "question": "Puis-je obtenir un délai de paiement ?",
+        "reponse": "Une demande écrite et motivée, accompagnée de justificatifs et d'une proposition d'échéancier réaliste, a de bien meilleures chances d'aboutir qu'un simple appel téléphonique."
+      }
+    ]
+  },
+  {
+    "slug": "creation-entreprise",
+    "nav": "Création d'entreprise",
+    "titre": "Création d'entreprise",
+    "titre_seo": "Création d'entreprise : être accompagné",
+    "accroche": "Structurer le projet dès le départ",
+    "icone": "brief",
+    "resume": "Accompagnement dans les premières étapes du projet : constitution, organisation et préparation des éléments.",
+    "meta": "Constitution, organisation administrative et préparation des éléments du projet, avec les professionnels compétents.",
+    "intro": "Les choix faits au moment de la création se paient, dans un sens ou dans l'autre, pendant des années. Structurer le projet dès le départ coûte beaucoup moins cher que de le corriger une fois l'activité lancée.",
+    "tags": [
+      "Constitution",
+      "Organisation",
+      "Développement"
+    ],
+    "etapes": [
+      {
+        "titre": "Création & constitution",
+        "texte": "Analyse du projet et préparation des éléments nécessaires à la constitution."
+      },
+      {
+        "titre": "Choix et préparation",
+        "texte": "Étude des options envisageables et préparation des pièces correspondantes."
+      },
+      {
+        "titre": "Organisation administrative",
+        "texte": "Mise en place des obligations déclaratives et de l'organisation documentaire."
+      },
+      {
+        "titre": "Coordination",
+        "texte": "Mobilisation de l'expert-comptable, du notaire ou du professionnel compétent."
+      }
+    ],
+    "points": [
+      "Analyse du projet et de ses contraintes",
+      "Préparation des éléments nécessaires à la constitution",
+      "Organisation administrative et déclarative des premiers mois",
+      "Accompagnement dans la reprise et la réorganisation d'une activité existante",
+      "Coordination avec les professionnels compétents"
+    ],
+    "faq": [
+      {
+        "question": "Vous occupez-vous des formalités ?",
+        "reponse": "Nous préparons et organisons les éléments du dossier et coordonnons les professionnels compétents pour les actes qui relèvent de leur intervention."
+      },
+      {
+        "question": "Intervenez-vous aussi pour une reprise ?",
+        "reponse": "Oui. La reprise et la réorganisation d'une activité existante font partie du périmètre d'accompagnement."
+      }
+    ]
+  },
+  {
+    "slug": "social-paie-dsn",
+    "nav": "Social · Paie · DSN",
+    "titre": "Social, paie et DSN",
+    "titre_seo": "Paie, déclarations sociales et DSN",
+    "accroche": "Accompagnement administratif au quotidien",
+    "icone": "users",
+    "resume": "Gestion administrative de la paie, préparation et suivi des déclarations sociales et de la DSN.",
+    "meta": "Préparation des éléments de paie, suivi des déclarations sociales et de la DSN, organisation documentaire du dossier social.",
+    "intro": "La paie et les déclarations sociales ne tolèrent ni approximation ni retard. Une DSN mal préparée se rattrape, mais elle laisse des traces qui ressortent au premier contrôle URSSAF.",
+    "tags": [
+      "Paie",
+      "Déclarations sociales",
+      "DSN"
+    ],
+    "etapes": [
+      {
+        "titre": "Paie",
+        "texte": "Préparation et suivi des éléments nécessaires à la gestion de la paie."
+      },
+      {
+        "titre": "Déclarations sociales",
+        "texte": "Préparation et suivi des déclarations sociales périodiques."
+      },
+      {
+        "titre": "DSN",
+        "texte": "Accompagnement dans la préparation et le suivi des données de la déclaration sociale nominative."
+      },
+      {
+        "titre": "Suivi administratif",
+        "texte": "Organisation des documents et suivi des démarches dans la durée."
+      }
+    ],
+    "points": [
+      "Préparation des éléments variables de paie",
+      "Suivi des déclarations sociales périodiques",
+      "Accompagnement sur la préparation et le contrôle des DSN",
+      "Organisation documentaire et archivage des pièces sociales",
+      "Coordination avec l'expert-comptable ou le gestionnaire de paie"
+    ],
+    "faq": [
+      {
+        "question": "Remplacez-vous un gestionnaire de paie ?",
+        "reponse": "Non. Nous intervenons sur la préparation, l'organisation et le suivi administratif, en lien avec les professionnels compétents lorsque nécessaire."
+      },
+      {
+        "question": "Que se passe-t-il en cas d'erreur de DSN ?",
+        "reponse": "Une anomalie se régularise, mais les écarts répétés entre la paie et les déclarations constituent l'un des premiers points examinés lors d'un contrôle URSSAF."
+      }
+    ]
+  },
+  {
+    "slug": "procedures-et-recours",
+    "nav": "Procédures & recours",
+    "titre": "Procédures et recours",
+    "titre_seo": "Réclamation et recours fiscal",
+    "accroche": "Du contrôle jusqu'au contentieux",
+    "icone": "scale",
+    "resume": "Analyse documentaire et préparation administrative des dossiers de réclamation et de recours.",
+    "meta": "Réclamation contentieuse, recours hiérarchique, tribunal administratif : préparation des dossiers et respect des délais.",
+    "intro": "Un désaccord avec l'administration n'est pas une impasse. Réclamation, recours hiérarchique, tribunal administratif : chaque voie a ses conditions et surtout ses délais, dont le dépassement est irrattrapable.",
+    "tags": [
+      "Réclamation",
+      "Recours hiérarchique",
+      "Tribunal administratif"
+    ],
+    "etapes": [
+      {
+        "titre": "Contrôle",
+        "texte": "Analyse du dossier et des actes reçus depuis le début de la procédure."
+      },
+      {
+        "titre": "Rectification",
+        "texte": "Étude de la proposition de rectification et préparation des observations."
+      },
+      {
+        "titre": "Réclamation",
+        "texte": "Constitution du dossier de réclamation contentieuse dans les délais."
+      },
+      {
+        "titre": "Recours",
+        "texte": "Préparation du recours hiérarchique et coordination d'un avocat pour la voie juridictionnelle."
+      }
+    ],
+    "points": [
+      "Analyse documentaire complète du dossier",
+      "Préparation de la réclamation contentieuse",
+      "Préparation du recours hiérarchique",
+      "Suivi des délais à chaque étape de la procédure",
+      "Coordination d'un avocat fiscaliste pour le recours contentieux"
+    ],
+    "faq": [
+      {
+        "question": "Quel est le délai pour contester ?",
+        "reponse": "Il varie selon l'acte reçu et l'étape de la procédure. C'est le premier point à vérifier : un délai dépassé ferme définitivement la voie de recours correspondante."
+      },
+      {
+        "question": "Faut-il obligatoirement un avocat ?",
+        "reponse": "Pour la phase administrative, non. Pour le recours contentieux devant le tribunal, l'assistance d'un avocat fiscaliste est vivement recommandée, et nous en assurons la coordination."
+      }
+    ]
+  }
+]

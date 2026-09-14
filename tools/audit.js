@@ -21,7 +21,7 @@ const fs = require('fs');
 const path = require('path');
 
 const RACINE = path.resolve(__dirname, '..');
-const IGNORER = new Set(['.git', 'node_modules', '__pycache__', 'tools', '.well-known']);
+const IGNORER = new Set(['.git', 'node_modules', '__pycache__', 'tools', '.well-known', 'admin']);
 
 const C = {
   gras: (s) => `\x1b[1m${s}\x1b[0m`,

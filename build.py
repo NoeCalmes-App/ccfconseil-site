@@ -15,42 +15,16 @@ Les coordonnées du cabinet sont dans le dictionnaire SITE ci-dessous.
 import os
 from datetime import date
 
-from content import EXPERTISES, PROCEDURE
+from content import CABINET, EXPERTISES, PROCEDURE, RESSOURCES
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 ANNEE = date.today().year
 
 # ---------------------------------------------------------------------------
-# Coordonnées du cabinet — à compléter avant la mise en ligne
+# Coordonnées du cabinet
+# Elles vivent dans content/cabinet.json, modifiable depuis /admin.
 # ---------------------------------------------------------------------------
-SITE = {
-    "nom": "CCF Conseil",
-    "baseline": "Conseil · Fiscalité · Entreprises",
-    "signature": "Accompagner · Analyser · Préparer · Coordonner",
-    "domaine": "https://www.ccf-conseil.fr",
-    "email": "contact@ccf-conseil.fr",      # À REMPLACER
-    # Téléphone : laisser vide tant qu'il n'est pas communiqué.
-    # Dès qu'il est renseigné, il réapparaît partout (en-tête, pied de page,
-    # barre mobile, données structurées) sans autre modification.
-    "telephone": "",
-    "telephone_lien": "",
-    # Adresse : laisser vide tant qu'elle n'est pas communiquée.
-    # Les blocs « Au cabinet » disparaissent alors d'eux-mêmes.
-    "adresse": "",
-    "code_postal": "",
-    # La ville, même sans adresse complète, vaut la peine d'être renseignée :
-    # elle s'insère dans tous les titres et conditionne le référencement local.
-    "ville": "",
-    "siren": "SIREN à compléter",           # À REMPLACER
-    "forme": "Société à compléter",         # À REMPLACER
-    "horaires": "Du lundi au vendredi, 9h – 18h",
-
-    # Réservation en ligne (offre gratuite : un seul type d'événement)
-    "calendly": "https://calendly.com/ccf-conseil/premier-echange",   # À REMPLACER
-    # Service qui achemine le formulaire de contact par email.
-    # Laisser vide tant qu'il n'est pas configuré : le formulaire reste inactif.
-    "form_endpoint": "",                                              # À REMPLACER
-}
+SITE = CABINET
 
 # ---------------------------------------------------------------------------
 # Icônes — tracés SVG 24×24, couleur héritée du texte
@@ -298,6 +272,26 @@ def cta(root,
       <div class="cta__actions reveal reveal-d1">
         <a class="btn btn--primary" href="{rel('rendez-vous.html', root)}">Réserver un créneau</a>
         {contact_direct("arrow arrow--light")}
+      </div>
+    </div>
+  </div>
+</section>"""
+
+
+def cta_rdv_seul(titre, texte):
+    """Variante du bandeau d'appel sans rappel de l'email : utilisée sur la page
+    contact, où écrire est déjà l'action principale."""
+    return f"""<section class="cta">
+  <span class="cta__motif" aria-hidden="true"></span>
+  <div class="container">
+    <div class="cta__inner">
+      <div class="reveal">
+        <span class="label label--rule">Prendre rendez-vous</span>
+        <h2>{titre}</h2>
+        <p>{texte}</p>
+      </div>
+      <div class="cta__actions reveal reveal-d1">
+        <a class="btn btn--primary" href="rendez-vous.html">Réserver un créneau</a>
       </div>
     </div>
   </div>
@@ -1140,29 +1134,22 @@ def page_procedure():
 
 def page_ressources():
     root = "../"
-    a_venir = [
-        ("Contrôle fiscal : les cinq réflexes des premières 48 heures",
-         "Vérifier la date de réception, identifier les exercices visés, rassembler les pièces, "
-         "poser le calendrier, appeler un professionnel."),
-        ("Sursis de paiement : suspendre les saisies pendant la contestation",
-         "Ce que permet l'article L. 277 du Livre des procédures fiscales, comment formuler la "
-         "demande et quelles pièces y joindre."),
-        ("Contrôle URSSAF : les points les plus souvent redressés",
-         "Frais professionnels, avantages en nature, indemnités de rupture, statut des intervenants "
-         "extérieurs et cohérence des DSN."),
-        ("Difficultés de trésorerie : demander un délai de paiement",
-         "Comment construire une demande motivée et proposer un échéancier réaliste qui a des "
-         "chances d'être accepté."),
-        ("Créer son entreprise : les décisions qui coûtent cher plus tard",
-         "Les choix structurants des premiers mois et leurs conséquences fiscales et sociales "
-         "dans la durée."),
-    ]
-    rows = "".join(f"""<div class="index__row index__row--soon">
-      <span class="index__n">{i:02d}</span>
-      <h2 class="index__titre">{t}</h2>
-      <span class="index__desc">{d}</span>
-      <span class="index__soon">À venir</span>
-    </div>""" for i, (t, d) in enumerate(a_venir, 2))
+    lignes = []
+    for n, r in enumerate(RESSOURCES, 1):
+        if r.get("publie") and r.get("lien"):
+            lignes.append(f"""<a class="index__row reveal" href="{r['lien']}">
+        <span class="index__n">{n:02d}</span>
+        <h2 class="index__titre">{r['titre']}</h2>
+        <span class="index__desc">{r['resume']}</span>
+        <span class="index__go">{icon('arrow', w=1.2)}</span>
+      </a>""")
+        else:
+            lignes.append(f"""<div class="index__row index__row--soon">
+        <span class="index__n">{n:02d}</span>
+        <h2 class="index__titre">{r['titre']}</h2>
+        <span class="index__desc">{r['resume']}</span>
+        <span class="index__soon">À venir</span>
+      </div>""")
 
     body = f"""{page_head("Ressources", "Comprendre avant de subir",
       "Des repères clairs sur les procédures fiscales et sociales, écrits pour des dirigeants qui "
@@ -1172,16 +1159,7 @@ def page_ressources():
 
 <section class="section">
   <div class="container">
-    <div class="index">
-      <a class="index__row reveal" href="../procedure-fiscale.html">
-        <span class="index__n">01</span>
-        <h2 class="index__titre">La procédure fiscale étape par étape</h2>
-        <span class="index__desc">Les huit étapes, de la proposition de rectification au tribunal
-          administratif, avec le délai applicable à chacune.</span>
-        <span class="index__go">{icon('arrow', w=1.2)}</span>
-      </a>
-      {rows}
-    </div>
+    <div class="index">{"".join(lignes)}</div>
   </div>
 </section>
 
@@ -1215,7 +1193,7 @@ def page_contact():
     <div class="grid grid--2" style="gap:clamp(36px,6vw,90px);align-items:start">
       <div class="reveal">
         <span class="label label--rule">Nous joindre</span>
-        <h2>Trois façons d'échanger</h2>
+        <h2>{"Trois façons d'échanger" if a_adresse() else "Deux façons d'échanger"}</h2>
         <div class="stack mt">
           <div class="note">
             {icon('mail', 'note__icon')}
@@ -1238,14 +1216,14 @@ def page_contact():
         <p class="panel__sub">Nous vous répondons sous 24 heures ouvrées. Si votre échéance est
           proche, réservez directement un créneau.</p>
         {form("", False, "contact")}
-        <p class="panel__alt">Vous préférez fixer un créneau tout de suite&nbsp;?
-          <a href="rendez-vous.html">Réserver 15 minutes</a></p>
       </div>
     </div>
   </div>
 </section>
 
-{cta("")}
+{cta_rdv_seul("Vous préférez fixer un créneau&nbsp;?",
+     "Choisissez directement une disponibilité dans l'agenda du cabinet. "
+     "Quinze minutes, sans engagement.")}
 """
     return layout("contact.html", seo_titre("Contacter le cabinet"),
                   "Écrivez-nous ou réservez un premier échange de 15 minutes, par téléphone, "
@@ -1573,7 +1551,8 @@ def main():
     write("assets/img/favicon.svg", favicon())
     write(".well-known/security.txt", security_txt())
     write("sitemap.xml", sitemap(produced))
-    write("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {SITE['domaine']}/sitemap.xml\n")
+    write("robots.txt",
+          f"User-agent: *\nAllow: /\nDisallow: /admin/\n\nSitemap: {SITE['domaine']}/sitemap.xml\n")
     write(".nojekyll", "")
     print(f"\n{len(produced)} pages générées.")
 
