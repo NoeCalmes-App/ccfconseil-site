@@ -37,6 +37,12 @@ SITE = {
     "siren": "SIREN à compléter",           # À REMPLACER
     "forme": "Société à compléter",         # À REMPLACER
     "horaires": "Du lundi au vendredi, 9h – 18h",
+
+    # Réservation en ligne (offre gratuite : un seul type d'événement)
+    "calendly": "https://calendly.com/ccf-conseil/premier-echange",   # À REMPLACER
+    # Service qui achemine le formulaire de contact par email.
+    # Laisser vide tant qu'il n'est pas configuré : le formulaire reste inactif.
+    "form_endpoint": "",                                              # À REMPLACER
 }
 
 # ---------------------------------------------------------------------------
@@ -309,14 +315,18 @@ def faq_block(pairs):
     ) + "</div>"
 
 
-def form(root, compact=False, fid="rdv"):
+def form(root, compact=False, fid="contact"):
     options = "".join(f'<option value="{e["slug"]}">{e["nav"]}</option>' for e in EXPERTISES)
+    inactif = "" if SITE["form_endpoint"] else (
+        '<p class="form-warn" role="note"><b>Formulaire non encore raccordé</b>'
+        'Renseignez « form_endpoint » dans build.py avant la mise en ligne, '
+        'sinon les messages ne partiront pas.</p>')
     message = "" if compact else f"""
       <div class="field">
         <label for="{fid}-message">Votre situation en quelques lignes</label>
         <textarea id="{fid}-message" name="message" placeholder="Décrivez brièvement votre situation et, le cas échéant, l'échéance à laquelle vous êtes confronté."></textarea>
       </div>"""
-    return f"""<form data-form id="{fid}" method="post" action="" novalidate>
+    return f"""{inactif}<form data-form id="{fid}" method="post" action="{SITE['form_endpoint']}" novalidate>
       <div class="hp-field" aria-hidden="true">
         <label for="{fid}-site">Ne pas remplir</label>
         <input type="text" id="{fid}-site" name="site" tabindex="-1" autocomplete="off">
@@ -353,17 +363,76 @@ def form(root, compact=False, fid="rdv"):
           <a href="{rel('confidentialite.html', root)}">Politique de confidentialité</a>.</label>
       </div>
 
-      <button class="btn btn--primary btn--block" type="submit">Réserver mon appel</button>
-      <p class="form-note">Téléphone · 15 minutes · Sans engagement</p>
+      <button class="btn btn--primary btn--block" type="submit">Envoyer mon message</button>
+      <p class="form-note">Réponse sous 24 heures ouvrées</p>
     </form>"""
 
 
-def panel(root, titre, sous, compact=True, fid="rdv", label="15 minutes offertes"):
+def rdv_url(root, motif=None):
+    """Lien vers la page de réservation, motif pré-sélectionné le cas échéant."""
+    base = rel("rendez-vous.html", root)
+    return f"{base}?motif={motif}" if motif else base
+
+
+def booking_card(root, motif=None, titre="Réservez votre premier échange",
+                 sous="Choisissez directement un créneau dans l'agenda du cabinet. "
+                      "Confirmation immédiate par email."):
+    """Carte de conversion : elle mène à la page de réservation, sans script tiers."""
     return f"""<div class="panel reveal reveal-d2">
-      <span class="panel__label">{label}</span>
+      <span class="panel__label">15 minutes offertes</span>
       <h2>{titre}</h2>
       <p class="panel__sub">{sous}</p>
-      {form(root, compact, fid)}
+      <ol class="mini-steps">
+        <li><span>1</span> Vous choisissez un créneau disponible</li>
+        <li><span>2</span> Vous indiquez votre téléphone et le motif</li>
+        <li><span>3</span> Vous recevez la confirmation par email</li>
+      </ol>
+      <a class="btn btn--primary btn--block" href="{rdv_url(root, motif)}">
+        {icon('calendar')} Choisir mon créneau
+      </a>
+      <p class="form-note">Téléphone · 15 minutes · Sans engagement</p>
+      <p class="panel__alt">
+        Vous préférez écrire&nbsp;?
+        <a href="{rel('contact.html', root)}">Formulaire de contact</a>
+        · <a href="tel:{SITE['telephone_lien']}">{SITE['telephone']}</a>
+      </p>
+    </div>"""
+
+
+def motifs_json():
+    """Correspondance slug → libellé, pour pré-remplir la question « motif »."""
+    import json
+    table = {e["slug"]: e["nav"] for e in EXPERTISES}
+    table["autre"] = "Autre demande"
+    return json.dumps(table, ensure_ascii=False).replace("'", "&#39;")
+
+
+def calendly_embed():
+    """Widget de réservation, chargé uniquement après action explicite du visiteur.
+
+    Aucun script tiers n'est appelé tant que le visiteur n'a pas cliqué : pas de
+    cookie déposé à l'insu de l'utilisateur, donc pas de bandeau de consentement.
+    """
+    return f"""<div class="booking" id="reservation">
+      <div class="booking__placeholder" id="booking-placeholder">
+        <span class="panel__label">Agenda en ligne</span>
+        <h3>Afficher les créneaux disponibles</h3>
+        <p>
+          Le calendrier est fourni par un service externe. Il n'est chargé qu'après votre
+          accord : aucun cookie n'est déposé tant que vous n'avez pas cliqué.
+        </p>
+        <button class="btn btn--primary" type="button" id="booking-load"
+                data-calendly="{SITE['calendly']}"
+                data-motifs='{motifs_json()}'>
+          {icon('calendar')} Afficher le calendrier
+        </button>
+        <p class="booking__fallback">
+          Vous préférez ne pas passer par l'agenda&nbsp;?
+          Appelez le <a href="tel:{SITE['telephone_lien']}">{SITE['telephone']}</a>
+          ou écrivez à <a href="mailto:{SITE['email']}">{SITE['email']}</a>.
+        </p>
+      </div>
+      <div class="booking__widget" id="booking-widget" hidden></div>
     </div>"""
 
 
@@ -411,8 +480,10 @@ def layout(path, titre, description, body, root="", schema=""):
 <title>{titre}</title>
 <meta name="description" content="{description}">
 <link rel="canonical" href="{canonical}">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="{'noindex, follow' if path == '404.html' else 'index, follow'}">
 <meta name="theme-color" content="#0B1B30">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://formspree.io https://api.web3forms.com; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://assets.calendly.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://assets.calendly.com; frame-src https://calendly.com; connect-src 'self' https://calendly.com">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="{SITE['nom']}">
@@ -475,9 +546,8 @@ def page_accueil():
         </dl>
       </div>
 
-      {panel("", "Un premier échange par téléphone",
-             "Faites le point sur votre situation et identifiez les prochaines étapes.",
-             True, "rdv-accueil")}
+      {booking_card("", None, "Un premier échange par téléphone",
+             "Faites le point sur votre situation et identifiez les prochaines étapes.")}
     </div>
   </div>
 </section>
@@ -604,9 +674,9 @@ def page_expertise(e):
         <h3 class="mb">Ce que nous prenons en charge</h3>
         {checklist(e['points'])}
       </div>
-      {panel(root, "Parlons de votre dossier",
+      {booking_card(root, e['slug'], "Parlons de votre dossier",
              "Un premier échange téléphonique pour comprendre votre situation et identifier "
-             "l'accompagnement adapté.", True, "rdv-" + e['slug'])}
+             "l'accompagnement adapté.")}
     </div>
   </div>
 </section>
@@ -990,9 +1060,15 @@ def page_contact():
           </div>
         </div>
       </div>
-      {panel("", "Décrivez votre situation",
-             "Nous vous répondons sous 24 heures ouvrées. Si la situation est urgente, "
-             "privilégiez le téléphone.", False, "contact", "Formulaire de contact")}
+      <div class="panel reveal reveal-d2">
+        <span class="panel__label">Formulaire de contact</span>
+        <h2>Décrivez votre situation</h2>
+        <p class="panel__sub">Nous vous répondons sous 24 heures ouvrées. Si la situation est
+          urgente, privilégiez le téléphone.</p>
+        {form("", False, "contact")}
+        <p class="panel__alt">Vous préférez fixer un créneau tout de suite&nbsp;?
+          <a href="rendez-vous.html">Réserver 15 minutes</a></p>
+      </div>
     </div>
   </div>
 </section>
@@ -1019,9 +1095,9 @@ def page_rdv():
         <span class="label label--rule">Comment ça se passe</span>
         <h2>Trois étapes, et c'est réglé</h2>
         <div class="mt">{checklist([
-          "Vous indiquez vos coordonnées et le motif de votre demande.",
           "Vous choisissez un créneau parmi les disponibilités réelles du cabinet.",
-          "Vous recevez une confirmation par email, avec le rendez-vous dans votre agenda.",
+          "Vous indiquez votre téléphone et le motif de votre demande.",
+          "Vous recevez la confirmation par email, avec le rendez-vous dans votre agenda.",
         ])}</div>
 
         <hr class="divider">
@@ -1041,22 +1117,20 @@ def page_rdv():
           Si votre situation relève de notre périmètre, quelles sont les échéances à surveiller
           en priorité, et quel professionnel mobiliser si ce n'est pas nous.
         </div>
+
+        <div class="callout mt">
+          <b>Confidentialité</b>
+          N'envoyez aucun document ni aucune information sensible avant le premier échange.
+          Les pièces d'un dossier se transmettent par un moyen sécurisé convenu ensemble.
+        </div>
       </div>
-      {panel("", "Votre demande de rendez-vous",
-             "Renseignez vos coordonnées, nous vous confirmons le créneau par email.",
-             False, "rdv", "Réserver un créneau")}
+
+      <div class="reveal reveal-d2">
+        {calendly_embed()}
+      </div>
     </div>
   </div>
 </section>
-
-<!-- ════════════════════════════════════════════════════════════════════════
-     INTÉGRATION DE L'AGENDA EN LIGNE
-     Le formulaire ci-dessus est la version sans dépendance externe.
-     Pour activer la réservation synchronisée avec l'agenda du cabinet,
-     remplacer le bloc .panel par le widget du service retenu, en conservant
-     la pré-sélection du motif via le paramètre ?motif=<slug>.
-     Les valeurs possibles sont les noms de fichiers des pages d'expertise.
-     ════════════════════════════════════════════════════════════════════════ -->
 """
     return layout("rendez-vous.html", f"Prendre rendez-vous — 15 minutes offertes — {SITE['nom']}",
                   "Réservez un premier échange de 15 minutes avec CCF Conseil, par téléphone, "
@@ -1160,14 +1234,28 @@ et de portabilité sur vos données. Pour les exercer, écrivez à
 <a href="mailto:{SITE['email']}">{SITE['email']}</a>. Vous pouvez également introduire une
 réclamation auprès de la CNIL — <a href="https://www.cnil.fr" rel="noopener">www.cnil.fr</a>.</p>
 
-<h2>Cookies</h2>
-<p>Ce site ne dépose aucun cookie de mesure d'audience ni de publicité. Aucune bannière de
-consentement n'est donc nécessaire. Si un outil de réservation externe est intégré ultérieurement,
-cette page sera mise à jour et le consentement recueilli avant tout dépôt de cookie non essentiel.</p>
+<h2>Cookies et service de réservation</h2>
+<p>Ce site ne dépose aucun cookie de mesure d'audience ni de publicité, et n'utilise aucun
+traceur publicitaire. Aucune bannière de consentement n'est donc affichée.</p>
+<p>La prise de rendez-vous en ligne repose sur un service externe. Son module n'est
+<strong>chargé qu'après une action explicite de votre part</strong> : tant que vous n'avez pas
+cliqué sur « Afficher le calendrier », aucun script tiers n'est appelé et aucun cookie n'est
+déposé. Si vous préférez ne pas y recourir, le téléphone, le courriel et le formulaire de
+contact restent à votre disposition.</p>
+<p>Lorsque vous choisissez d'afficher le calendrier, les données que vous saisissez pour
+réserver (nom, adresse email, téléphone, motif) sont traitées par ce prestataire agissant en
+qualité de sous-traitant au sens de l'article 28 du RGPD, aux seules fins d'organiser le
+rendez-vous.</p>
 
 <h2>Sécurité</h2>
-<p>Le site est servi exclusivement en HTTPS. Les échanges liés à un dossier se font par des canaux
-convenus avec vous et adaptés à la sensibilité des documents concernés.</p>
+<p>Le site est servi exclusivement en HTTPS et applique une politique de sécurité du contenu
+restrictive : seules les ressources strictement nécessaires peuvent être chargées.</p>
+<p>Les échanges liés à un dossier se font par des canaux convenus avec vous et adaptés à la
+sensibilité des documents concernés. <strong>Ne transmettez jamais de pièces comptables, de
+courriers de l'administration ou de données bancaires via les formulaires de ce site.</strong></p>
+<p>Pour signaler une faille de sécurité, écrivez à
+<a href="mailto:{SITE['email']}">{SITE['email']}</a> — voir également le fichier
+<a href="/.well-known/security.txt">security.txt</a>.</p>
 """
     return page_prose("confidentialite.html", f"Politique de confidentialité — {SITE['nom']}",
                       "Politique de confidentialité", "Données personnelles",
@@ -1202,19 +1290,41 @@ def page_plan():
 
 def page_404():
     body = f"""{page_head("Erreur 404", "Cette page n'existe pas",
-      "Le lien est peut-être erroné ou la page a été déplacée. Voici les chemins les plus utiles.")}
+      "Le lien est peut-être erroné, ou la page a été déplacée. Rien n'est perdu : "
+      "voici les chemins les plus utiles.")}
+
 <section class="section">
   <div class="container">
-    {index_rows([
-      ("/index.html", "Retour à l'accueil", "La page principale du site."),
-      ("/expertises/index.html", "Nos expertises", "Les sept pôles d'accompagnement."),
-      ("/rendez-vous.html", "Prendre rendez-vous", "15 minutes offertes, sans engagement."),
-    ])}
+    <div class="grid grid--2" style="gap:clamp(36px,6vw,90px);align-items:start">
+      <div class="reveal">
+        <span class="label label--rule">Où aller</span>
+        <h2>Reprendre votre navigation</h2>
+        <div class="mt">
+          {index_rows([
+            ("/expertises/index.html", "Nos expertises", "Les sept pôles d'accompagnement du cabinet."),
+            ("/procedure-fiscale.html", "La procédure fiscale", "Les huit étapes et leurs délais."),
+            ("/plan-du-site.html", "Plan du site", "Toutes les pages en un coup d'œil."),
+          ])}
+        </div>
+      </div>
+      <div class="panel reveal reveal-d2">
+        <span class="panel__label">Vous cherchiez à nous joindre&nbsp;?</span>
+        <h2>Nous sommes joignables directement</h2>
+        <p class="panel__sub">Si votre situation est urgente, le téléphone reste le plus rapide.</p>
+        <p class="mt-s"><a class="btn btn--primary btn--block" href="/rendez-vous.html">
+          {icon('calendar')} Réserver 15 minutes</a></p>
+        <p class="panel__alt">
+          <a href="tel:{SITE['telephone_lien']}">{SITE['telephone']}</a>
+          · <a href="mailto:{SITE['email']}">{SITE['email']}</a>
+        </p>
+      </div>
+    </div>
   </div>
 </section>
 """
     return layout("404.html", f"Page introuvable — {SITE['nom']}",
-                  "La page demandée n'existe pas.", body, "")
+                  "La page demandée n'existe pas. Retrouvez les expertises, la procédure fiscale "
+                  "et les coordonnées du cabinet.", body, "")
 
 
 # ---------------------------------------------------------------------------
@@ -1227,6 +1337,16 @@ def favicon():
   <path d="M24 16v16M18 32h12" stroke="#F3F1EB" stroke-width="1.8" stroke-linecap="round"/>
 </svg>
 """
+
+
+def security_txt():
+    """Point de contact pour un signalement de faille (RFC 9116)."""
+    from datetime import timedelta
+    expire = (date.today() + timedelta(days=365)).isoformat()
+    return (f"Contact: mailto:{SITE['email']}\n"
+            f"Expires: {expire}T00:00:00.000Z\n"
+            "Preferred-Languages: fr, en\n"
+            f"Canonical: {SITE['domaine']}/.well-known/security.txt\n")
 
 
 def sitemap(pages):
@@ -1269,6 +1389,7 @@ def main():
     emit("404.html", page_404())
 
     write("assets/img/favicon.svg", favicon())
+    write(".well-known/security.txt", security_txt())
     write("sitemap.xml", sitemap(produced))
     write("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {SITE['domaine']}/sitemap.xml\n")
     write(".nojekyll", "")

@@ -8,6 +8,8 @@
 <link rel="canonical" href="https://www.ccf-conseil.fr/contact.html">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0B1B30">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://formspree.io https://api.web3forms.com; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://assets.calendly.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://assets.calendly.com; frame-src https://calendly.com; connect-src 'self' https://calendly.com">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="CCF Conseil">
@@ -97,10 +99,11 @@
         </div>
       </div>
       <div class="panel reveal reveal-d2">
-      <span class="panel__label">Formulaire de contact</span>
-      <h2>Décrivez votre situation</h2>
-      <p class="panel__sub">Nous vous répondons sous 24 heures ouvrées. Si la situation est urgente, privilégiez le téléphone.</p>
-      <form data-form id="contact" method="post" action="" novalidate>
+        <span class="panel__label">Formulaire de contact</span>
+        <h2>Décrivez votre situation</h2>
+        <p class="panel__sub">Nous vous répondons sous 24 heures ouvrées. Si la situation est
+          urgente, privilégiez le téléphone.</p>
+        <p class="form-warn" role="note"><b>Formulaire non encore raccordé</b>Renseignez « form_endpoint » dans build.py avant la mise en ligne, sinon les messages ne partiront pas.</p><form data-form id="contact" method="post" action="" novalidate>
       <div class="hp-field" aria-hidden="true">
         <label for="contact-site">Ne pas remplir</label>
         <input type="text" id="contact-site" name="site" tabindex="-1" autocomplete="off">
@@ -141,10 +144,12 @@
           <a href="confidentialite.html">Politique de confidentialité</a>.</label>
       </div>
 
-      <button class="btn btn--primary btn--block" type="submit">Réserver mon appel</button>
-      <p class="form-note">Téléphone · 15 minutes · Sans engagement</p>
+      <button class="btn btn--primary btn--block" type="submit">Envoyer mon message</button>
+      <p class="form-note">Réponse sous 24 heures ouvrées</p>
     </form>
-    </div>
+        <p class="panel__alt">Vous préférez fixer un créneau tout de suite&nbsp;?
+          <a href="rendez-vous.html">Réserver 15 minutes</a></p>
+      </div>
     </div>
   </div>
 </section>

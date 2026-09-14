@@ -113,23 +113,41 @@ Le fichier `.nojekyll` empêche GitHub de traiter le dossier avec Jekyll. Ne pas
 
 ---
 
-## Formulaires
+## Prise de rendez-vous
 
-Les formulaires sont fonctionnels côté navigateur (validation, piège à robots, blocage des
-soumissions trop rapides) mais **leur attribut `action` est vide** : un site statique ne peut
-pas envoyer d'email par lui-même.
+La réservation passe par un agenda en ligne externe, configuré sur son offre gratuite (un seul
+type d'événement, ce qui suffit : le motif est demandé dans le formulaire de réservation).
 
-Deux options au choix au moment de la mise en ligne :
+**Configuration** — renseigner `calendly` dans `SITE` (`build.py`) avec l'URL de l'événement,
+puis régénérer. Côté agenda, créer un événement « Premier échange — 15 minutes » et y ajouter
+trois questions personnalisées, dans cet ordre :
 
-- **Service d'envoi de formulaire** : renseigner l'URL fournie dans `action` des formulaires
-  `data-form`. Aucune autre modification n'est nécessaire.
-- **Widget de réservation externe** : remplacer le bloc `.lead-card` de `rendez-vous.html`
-  par le code d'intégration du service retenu. Le bloc de commentaire en fin de page indique
-  l'emplacement exact.
+1. **Motif de votre demande** (liste déroulante : les sept expertises + « Autre »)
+2. **Votre situation en quelques lignes** (texte libre)
+3. **Échéance éventuelle** (texte court)
 
-La pré-sélection du motif fonctionne déjà : un lien vers `rendez-vous.html?motif=controle-fiscal`
-sélectionne automatiquement la bonne option. Les valeurs disponibles correspondent aux noms
-de fichiers des pages d'expertise.
+L'ordre compte : le site pré-remplit la **première** question via le paramètre `a1`.
+
+**Pré-sélection du motif** — chaque page d'expertise renvoie vers
+`rendez-vous.html?motif=controle-fiscal`. Le script convertit ce paramètre en libellé lisible et
+le transmet à l'agenda. Les valeurs possibles sont les noms de fichiers des pages d'expertise.
+
+**Chargement différé** — le script de l'agenda n'est appelé qu'après un clic sur « Afficher le
+calendrier ». Conséquences : aucune requête tierce au chargement de la page, aucun cookie déposé
+sans action du visiteur, donc **aucune bannière de consentement nécessaire**, et une page de
+rendez-vous qui reste aussi rapide que les autres. Si le script échoue, un message de repli
+affiche le téléphone et l'adresse email.
+
+## Formulaire de contact
+
+Le formulaire de `contact.html` est fonctionnel côté navigateur (validation, piège à robots,
+blocage des soumissions trop rapides) mais **un site statique ne peut pas envoyer d'email par
+lui-même**.
+
+Renseigner `form_endpoint` dans `SITE` avec l'URL d'un service d'acheminement de formulaire.
+Tant que le champ est vide, un avertissement visible s'affiche au-dessus du formulaire : il
+disparaît dès que l'URL est renseignée. Penser à ajouter le domaine du service à la directive
+`form-action` de la politique de sécurité du contenu, dans `layout()`.
 
 ---
 
@@ -151,6 +169,35 @@ Reste à faire après la mise en ligne :
 4. publier progressivement les fiches pratiques listées dans `ressources/index.html`.
 
 ---
+
+## Sécurité
+
+Déjà en place :
+
+- **Politique de sécurité du contenu** (CSP) restrictive déclarée sur chaque page : seuls les
+  polices Google, le script de l'agenda et les ressources du site peuvent se charger. Tout
+  script injecté par un tiers est bloqué par le navigateur.
+- `Referrer-Policy: strict-origin-when-cross-origin` — les URL internes ne fuitent pas vers
+  les sites externes.
+- **Aucun stockage navigateur**, aucun cookie propre, aucun traceur.
+- Liens externes en `rel="noopener"`.
+- Formulaire protégé par un champ piège et un contrôle de vitesse de soumission.
+- `/.well-known/security.txt` — point de contact pour signaler une faille (RFC 9116).
+- Page `404.html` en `noindex`, sans message technique ni information sur la structure du site.
+
+À faire côté hébergement, car une page statique ne peut pas les déclarer elle-même :
+
+| En-tête | Valeur recommandée |
+|---|---|
+| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains` |
+| `X-Content-Type-Options` | `nosniff` |
+| `X-Frame-Options` | `DENY` |
+| `Permissions-Policy` | `geolocation=(), microphone=(), camera=()` |
+
+GitHub Pages ne permet pas de définir ces en-têtes. Ils se configurent en plaçant le site
+derrière Cloudflare (offre gratuite), ce qui apporte aussi le HSTS et un certificat géré.
+Sans cela, le site reste sûr — il n'y a ni base de données, ni code serveur, ni session à
+compromettre — mais ces en-têtes ferment les derniers angles morts.
 
 ## Accessibilité et compatibilité
 
