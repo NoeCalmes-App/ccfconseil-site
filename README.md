@@ -203,6 +203,16 @@ l'assurance de responsabilité civile professionnelle.
 
 ## Mise en ligne sur GitHub Pages
 
+```bash
+npm run publier
+```
+
+Le script crée le dépôt **privé** (le fichier `content/cabinet.json` contiendra le SIREN et
+l'adresse de la cliente), enregistre les modifications en attente et pousse. Si `gh` n'est
+pas installé, il affiche les deux commandes à lancer à la main.
+
+Ensuite, manuellement :
+
 1. Créer un dépôt et pousser le contenu de ce dossier.
 2. `Settings` → `Pages` → *Source* : `Deploy from a branch`, branche `main`, dossier `/ (root)`.
 3. Renseigner le domaine personnalisé dans *Custom domain*, puis cocher *Enforce HTTPS*.
