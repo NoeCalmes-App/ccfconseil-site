@@ -160,19 +160,27 @@
   var CALENDLY_CSS = 'https://assets.calendly.com/assets/external/widget.css';
 
   function urlDeReservation() {
-    var base = bouton.dataset.calendly;
-    var params = new URLSearchParams();
-    params.set('hide_gdpr_banner', '1');
-    params.set('primary_color', 'b08a33');
+    // L'URL stockée peut déjà porter des paramètres (hide_event_type_details…).
+    // On les conserve et on n'ajoute que ce qui manque : aucun doublon.
+    var url;
+    try { url = new URL(bouton.dataset.calendly); }
+    catch (e) { return bouton.dataset.calendly; }
+
+    if (!url.searchParams.has('hide_gdpr_banner')) {
+      url.searchParams.set('hide_gdpr_banner', '1');
+    }
+    if (!url.searchParams.has('primary_color')) {
+      url.searchParams.set('primary_color', 'b08a33');
+    }
 
     // Motif transmis par la page d'expertise : ?motif=controle-fiscal
     var motif = new URLSearchParams(window.location.search).get('motif');
     if (motif) {
       var libelles = {};
       try { libelles = JSON.parse(bouton.dataset.motifs || '{}'); } catch (e) { libelles = {}; }
-      if (libelles[motif]) { params.set('a1', libelles[motif]); }
+      if (libelles[motif]) { url.searchParams.set('a1', libelles[motif]); }
     }
-    return base + (base.indexOf('?') === -1 ? '?' : '&') + params.toString();
+    return url.toString();
   }
 
   function afficherSecours(message) {

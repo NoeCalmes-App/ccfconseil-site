@@ -48,7 +48,7 @@ const SECURITE = {
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
-  'Permissions-Policy': 'geolocation=(), microphone=(), camera=(), payment=(), usb=()',
+  'Permissions-Policy': 'geolocation=(), microphone=(), camera=(), payment=(self "https://calendly.com"), usb=()',
   'Cross-Origin-Opener-Policy': 'same-origin',
 };
 
