@@ -139,14 +139,6 @@ def brand(root, tag=True):
     </a>"""
 
 
-def header_contact():
-    if a_tel():
-        return (f'<a class="header-contact" href="tel:{SITE["telephone_lien"]}">'
-                f'{icon("phone")} {SITE["telephone"]}</a>')
-    return (f'<a class="header-contact" href="mailto:{SITE["email"]}">'
-            f'{icon("mail")} {SITE["email"]}</a>')
-
-
 def header(current, root):
     parts = []
     for href, label in NAV_ITEMS:
@@ -167,8 +159,7 @@ def header(current, root):
     </nav>
 
     <div class="header-cta">
-      {header_contact()}
-      <a class="btn btn--primary" href="{rel('rendez-vous.html', root)}">Rendez-vous</a>
+      <a class="btn btn--primary" href="{rel('rendez-vous.html', root)}">Prendre rendez-vous</a>
       <button class="nav-toggle" type="button" aria-expanded="false"
               aria-controls="nav-principal" aria-label="Ouvrir le menu">
         <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">{I['menu']}</svg>
@@ -278,7 +269,7 @@ def cta(root,
 </section>"""
 
 
-def cta_rdv_seul(titre, texte):
+def cta_rdv_seul(titre, texte, bouton=("rendez-vous.html", "Réserver un créneau")):
     """Variante du bandeau d'appel sans rappel de l'email : utilisée sur la page
     contact, où écrire est déjà l'action principale."""
     return f"""<section class="cta">
@@ -291,7 +282,7 @@ def cta_rdv_seul(titre, texte):
         <p>{texte}</p>
       </div>
       <div class="cta__actions reveal reveal-d1">
-        <a class="btn btn--primary" href="rendez-vous.html">Réserver un créneau</a>
+        <a class="btn btn--primary" href="{bouton[0]}">{bouton[1]}</a>
       </div>
     </div>
   </div>
@@ -469,7 +460,7 @@ def calendly_embed():
     return f"""<div class="booking" id="reservation">
       <div class="booking__placeholder" id="booking-placeholder">
         <span class="panel__label">Agenda en ligne</span>
-        <h3>Afficher les créneaux disponibles</h3>
+        <h2 class="index__titre">Afficher les créneaux disponibles</h2>
         <p>
           Le calendrier est fourni par un service externe. Il n'est chargé qu'après votre
           accord : aucun cookie n'est déposé tant que vous n'avez pas cliqué.
@@ -1232,57 +1223,49 @@ def page_contact():
 
 
 def page_rdv():
+    formats = [
+        ("phone", "Par téléphone", "Nous vous appelons au numéro indiqué lors de la réservation."),
+        ("video", "En visioconférence", "Pour examiner ensemble des documents pendant l'échange."),
+    ]
+    if a_adresse():
+        formats.append(("pin", "Au cabinet",
+                        "Sur rendez-vous, pour les dossiers qui méritent un examen approfondi."))
+    cartes = "".join(f"""<div class="note reveal">
+        {icon(ic, 'note__icon')}<h2 class="index__titre">{titre}</h2><p>{texte}</p>
+      </div>""" for ic, titre, texte in formats)
+
     body = f"""{page_head("Rendez-vous", "15 minutes offertes pour faire le point",
-      "Un échange préalable, sans engagement, pour présenter brièvement votre situation et "
-      "déterminer la nature de votre besoin.",
+      "Choisissez un créneau dans l'agenda du cabinet. Sans engagement, et sans échange de mails "
+      "pour trouver une date.",
       ["15 minutes", "Sans engagement", "Confidentiel"])}
 
 {crumb([("Accueil", "index.html"), ("Rendez-vous", None)], "")}
 
-<section class="section">
+<section class="section section--tight">
+  <div class="container" style="max-width:940px">
+    {calendly_embed()}
+  </div>
+</section>
+
+<section class="section section--ivory section--tight">
   <div class="container">
-    <div class="grid grid--2" style="gap:clamp(36px,6vw,90px);align-items:start">
-      <div class="reveal">
-        <span class="label label--rule">Comment ça se passe</span>
-        <h2>Trois étapes, et c'est réglé</h2>
-        <div class="mt">{checklist([
-          "Vous choisissez un créneau parmi les disponibilités réelles du cabinet.",
-          "Vous indiquez votre téléphone et le motif de votre demande.",
-          "Vous recevez la confirmation par email, avec le rendez-vous dans votre agenda.",
-        ])}</div>
+    <div class="section-head reveal" style="margin-bottom:clamp(26px,3vw,40px)">
+      <span class="label label--rule">Le format de l'échange</span>
+      <h2>Vous choisissez au moment de réserver</h2>
+    </div>
+    <div class="grid grid--3">{cartes}</div>
 
-        <hr class="divider">
-
-        <h3 class="mb">Le format de l'échange</h3>
-        <div class="stack">
-          <div class="note">{icon('phone', 'note__icon')}<h3>Par téléphone</h3>
-            <p>Le format le plus simple et le plus rapide. Nous vous appelons au numéro que vous indiquez lors de la réservation.</p></div>
-          <div class="note">{icon('video', 'note__icon')}<h3>En visioconférence</h3>
-            <p>Utile pour examiner ensemble des documents pendant l'échange.</p></div>
-          {'<div class="note">' + icon('pin', 'note__icon') + '<h3>Au cabinet</h3>'
-            '<p>Sur rendez-vous, pour les dossiers qui méritent un examen approfondi.</p></div>'
-            if a_adresse() else ''}
-        </div>
-
-        <div class="callout mt">
-          <b>Ce que nous vous dirons</b>
-          Si votre situation relève de notre périmètre, quelles sont les échéances à surveiller
-          en priorité, et quel professionnel mobiliser si ce n'est pas nous.
-        </div>
-
-        <div class="callout mt">
-          <b>Confidentialité</b>
-          N'envoyez aucun document ni aucune information sensible avant le premier échange.
-          Les pièces d'un dossier se transmettent par un moyen sécurisé convenu ensemble.
-        </div>
-      </div>
-
-      <div class="reveal reveal-d2">
-        {calendly_embed()}
-      </div>
+    <div class="callout mt" style="max-width:70ch">
+      <b>Avant le premier échange</b>
+      N'envoyez aucun document ni aucune information sensible. Les pièces d'un dossier se
+      transmettent ensuite, par un moyen sécurisé convenu ensemble.
     </div>
   </div>
 </section>
+
+{cta_rdv_seul("Vous préférez exposer votre situation par écrit&nbsp;?",
+     "Décrivez votre demande par le formulaire de contact. Réponse sous 24 heures ouvrées.",
+     ("contact.html", "Formulaire de contact"))}
 """
     return layout("rendez-vous.html", seo_titre("Prendre rendez-vous, 15 minutes offertes"),
                   "Choisissez un créneau dans l'agenda du cabinet : premier échange de 15 minutes, "
