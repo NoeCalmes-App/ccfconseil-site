@@ -456,17 +456,16 @@ def booking_card(root, motif=None, titre="Réservez votre premier échange",
       <p class="panel__sub">{sous}</p>
       <ol class="mini-steps">
         <li><span>1</span> Vous choisissez un créneau disponible</li>
-        <li><span>2</span> Vous indiquez votre téléphone et le motif</li>
+        <li><span>2</span> Vous indiquez vos coordonnées et le motif</li>
         <li><span>3</span> Vous recevez la confirmation par email</li>
       </ol>
       <a class="btn btn--primary btn--block" href="{rdv_url(root, motif)}">
         {icon('calendar')} Choisir mon créneau
       </a>
-      <p class="form-note">Téléphone · 15 minutes · Sans engagement</p>
+      <p class="form-note">15 minutes · Sans engagement</p>
       <p class="panel__alt">
         Vous préférez écrire&nbsp;?
-        <a href="{rel('contact.html', root)}">Formulaire de contact</a>
-        · <a href="mailto:{SITE['email']}">Nous écrire</a>
+        <a href="mailto:{SITE['email']}">{SITE['email']}</a>
       </p>
     </div>"""
 
@@ -706,7 +705,7 @@ def page_accueil():
         </dl>
       </div>
 
-      {booking_card("", None, "Un premier échange par téléphone",
+      {booking_card("", None, "Un premier échange de quinze minutes",
              "Faites le point sur votre situation et identifiez les prochaines étapes.")}
     </div>
   </div>
@@ -994,8 +993,8 @@ def page_cabinet():
     {faq_block([
       ("Êtes-vous avocats ?", "Non. CCF Conseil exerce une activité de conseil et d'assistance. Nous intervenons sur l'analyse, la préparation administrative des dossiers et la coordination des professionnels compétents, dans les limites légalement autorisées. Lorsqu'un dossier appelle une intervention juridique ou une représentation devant une juridiction, nous coordonnons un avocat fiscaliste."),
       ("Travaillez-vous avec mon expert-comptable ?", "Oui, et c'est souvent la meilleure configuration. L'expert-comptable connaît vos chiffres, nous apportons la préparation du dossier et le suivi de la procédure. Les deux interventions se complètent."),
-      ("Le premier échange est-il vraiment gratuit ?", "Oui. Quinze minutes par téléphone, sans engagement, pour comprendre votre situation et vous dire honnêtement si nous sommes le bon interlocuteur."),
-      ("Intervenez-vous partout en France ?", "Oui. Les échanges se font par téléphone, en visioconférence ou au cabinet selon votre préférence et la nature du dossier."),
+      ("Le premier échange est-il vraiment gratuit ?", "Oui. Quinze minutes, sans engagement, pour comprendre votre situation et vous dire honnêtement si nous sommes le bon interlocuteur."),
+      ("Intervenez-vous partout en France ?", "Oui. Le mode de l'échange est convenu au moment de la réservation, selon votre préférence et la nature du dossier."),
     ])}
   </div>
 </section>
@@ -1210,20 +1209,15 @@ def page_contact():
   <div class="container">
     <div class="section-head reveal">
       <span class="label label--rule">Nous joindre</span>
-      <h2>{"Trois façons d'échanger" if a_adresse() else "Deux façons d'échanger"}</h2>
+      <h2>{"Deux façons d'échanger" if a_adresse() else "Écrivez-nous"}</h2>
     </div>
-    <div class="grid grid--3 mt">
+    <div class="grid grid--2 mt">
       <div class="note reveal">
         {icon('mail', 'note__icon')}
         <h3>Par email</h3>
         <p>Le plus simple pour exposer une situation et joindre le contexte utile.
            Réponse sous 24 heures ouvrées.</p>
         <p class="mt-s">{lien_email("arrow")}</p>
-      </div>
-      <div class="note reveal reveal-d2">
-        {icon('video', 'note__icon')}
-        <h3>En visioconférence</h3>
-        <p>Pratique pour passer en revue des documents ensemble, où que vous soyez.</p>
       </div>
       {carte_cabinet()}
     </div>
@@ -1235,27 +1229,13 @@ def page_contact():
      "Quinze minutes, sans engagement.")}
 """
     return layout("contact.html", seo_titre("Contacter le cabinet"),
-                  "Écrivez-nous ou réservez un premier échange de 15 minutes, par téléphone, "
-                  "en visioconférence ou au cabinet. Sans engagement, réponse sous 24 heures.",
+                  "Écrivez-nous ou réservez un premier échange de 15 minutes. Sans engagement, "
+                  "réponse sous 24 heures ouvrées.",
                   body, "", breadcrumb_schema([("Accueil", ""), ("Contact", "contact.html")]))
 
 
 def page_rdv():
-    formats = [
-        ("phone", "Par téléphone", "Nous vous appelons au numéro indiqué lors de la réservation."),
-        ("video", "En visioconférence", "Pour examiner ensemble des documents pendant l'échange."),
-    ]
-    if a_adresse():
-        formats.append(("pin", "Au cabinet",
-                        "Sur rendez-vous, pour les dossiers qui méritent un examen approfondi."))
-    cartes = "".join(f"""<div class="note reveal">
-        {icon(ic, 'note__icon')}<h2 class="index__titre">{titre}</h2><p>{texte}</p>
-      </div>""" for ic, titre, texte in formats)
-
-    body = f"""{page_head("Rendez-vous", "15 minutes offertes pour faire le point",
-      "Choisissez un créneau dans l'agenda du cabinet. Sans engagement, et sans échange de mails "
-      "pour trouver une date.",
-      ["15 minutes", "Sans engagement", "Confidentiel"])}
+    body = f"""{page_head("Rendez-vous", "15 minutes offertes pour faire le point", "")}
 
 {crumb([("Accueil", "index.html"), ("Rendez-vous", None)], "")}
 
@@ -1265,29 +1245,13 @@ def page_rdv():
   </div>
 </section>
 
-<section class="section section--ivory section--tight">
-  <div class="container">
-    <div class="section-head reveal" style="margin-bottom:clamp(26px,3vw,40px)">
-      <span class="label label--rule">Le format de l'échange</span>
-      <h2>Vous choisissez au moment de réserver</h2>
-    </div>
-    <div class="grid grid--3">{cartes}</div>
-
-    <div class="callout mt" style="max-width:70ch">
-      <b>Avant le premier échange</b>
-      N'envoyez aucun document ni aucune information sensible. Les pièces d'un dossier se
-      transmettent ensuite, par un moyen sécurisé convenu ensemble.
-    </div>
-  </div>
-</section>
-
 {cta_rdv_seul("Vous préférez exposer votre situation par écrit&nbsp;?",
-     "Décrivez votre demande par le formulaire de contact. Réponse sous 24 heures ouvrées.",
-     ("contact.html", "Formulaire de contact"))}
+     "Écrivez-nous en décrivant votre demande. Réponse sous 24 heures ouvrées.",
+     ("contact.html", "Nous écrire"))}
 """
     return layout("rendez-vous.html", seo_titre("Prendre rendez-vous, 15 minutes offertes"),
-                  "Choisissez un créneau dans l'agenda du cabinet : premier échange de 15 minutes, "
-                  "par téléphone, en visioconférence ou au cabinet. Sans engagement.",
+                  "Choisissez un créneau dans l'agenda du cabinet : premier échange de "
+                  "15 minutes, sans engagement.",
                   body, "", breadcrumb_schema([("Accueil", ""), ("Rendez-vous", "rendez-vous.html")]))
 
 
@@ -1362,10 +1326,11 @@ loi Informatique et Libertés.</p>
 <a href="mailto:{SITE['email']}">{SITE['email']}</a>.</p>
 
 <h2>Données collectées</h2>
-<p>Les formulaires de contact et de demande de rendez-vous collectent uniquement les données
-nécessaires au traitement de votre demande : nom et prénom, numéro de téléphone, adresse email,
-motif de la demande et, le cas échéant, la description que vous rédigez librement.</p>
-<p><strong>Ne communiquez aucun document ni aucune information sensible via ces formulaires.</strong>
+<p>La prise de rendez-vous en ligne collecte uniquement les données nécessaires à
+l'organisation de l'échange : nom et prénom, adresse email, motif de la demande et, le cas
+échéant, la description que vous rédigez librement. Le site ne comporte aucun autre
+formulaire : pour tout le reste, vous nous écrivez depuis votre propre messagerie.</p>
+<p><strong>Ne communiquez aucun document ni aucune information sensible par ce biais.</strong>
 Les pièces d'un dossier se transmettent lors d'un échange direct, par un moyen sécurisé convenu
 ensemble.</p>
 
@@ -1374,7 +1339,7 @@ ensemble.</p>
 <table>
   <thead><tr><th>Traitement</th><th>Finalité</th><th>Base légale</th><th>Conservation</th></tr></thead>
   <tbody>
-    <tr><td>Formulaire de contact</td><td>Répondre à votre demande</td><td>Consentement</td><td>3 ans après le dernier contact</td></tr>
+    <tr><td>Échanges par courriel</td><td>Répondre à votre demande</td><td>Consentement</td><td>3 ans après le dernier contact</td></tr>
     <tr><td>Demande de rendez-vous</td><td>Organiser le premier échange</td><td>Mesures précontractuelles</td><td>3 ans après le dernier contact</td></tr>
     <tr><td>Relation client</td><td>Exécution de la mission</td><td>Contrat</td><td>Durée légale applicable</td></tr>
   </tbody>
@@ -1399,8 +1364,7 @@ traceur publicitaire.</p>
 <strong>chargé en même temps que la page « Rendez-vous »</strong> : dès son ouverture, ce
 prestataire reçoit votre adresse IP et peut déposer les cookies nécessaires à son
 fonctionnement. Les autres pages du site n'appellent aucun script tiers. Si vous préférez ne
-pas y recourir, le téléphone, le courriel et le formulaire de contact restent à votre
-disposition.</p>
+pas y recourir, le courriel reste à votre disposition.</p>
 <p>Lorsque vous choisissez d'afficher le calendrier, les données que vous saisissez pour
 réserver (nom, adresse email, téléphone, motif) sont traitées par ce prestataire agissant en
 qualité de sous-traitant au sens de l'article 28 du RGPD, aux seules fins d'organiser le
@@ -1411,7 +1375,7 @@ rendez-vous.</p>
 restrictive : seules les ressources strictement nécessaires peuvent être chargées.</p>
 <p>Les échanges liés à un dossier se font par des canaux convenus avec vous et adaptés à la
 sensibilité des documents concernés. <strong>Ne transmettez jamais de pièces comptables, de
-courriers de l'administration ou de données bancaires via les formulaires de ce site.</strong></p>
+courriers de l'administration ou de données bancaires via ce site.</strong></p>
 <p>Pour signaler une faille de sécurité, écrivez à
 <a href="mailto:{SITE['email']}">{SITE['email']}</a> — voir également le fichier
 <a href="/.well-known/security.txt">security.txt</a>.</p>
