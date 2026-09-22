@@ -201,6 +201,9 @@
   script.onload = function () {
     if (window.Calendly && typeof window.Calendly.initInlineWidget === 'function') {
       conteneur.innerHTML = '';
+      // Sans cette classe, la feuille de style du prestataire ne s'applique pas
+      // et son iframe reste a la hauteur par defaut de 150 px.
+      conteneur.classList.add('calendly-inline-widget');
       window.Calendly.initInlineWidget({
         url: urlDeReservation(),
         parentElement: conteneur
