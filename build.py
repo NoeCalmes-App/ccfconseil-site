@@ -12,6 +12,7 @@ Le texte éditorial (expertises, procédure) est dans content.py.
 Les coordonnées du cabinet sont dans le dictionnaire SITE ci-dessous.
 """
 
+import hashlib
 import html
 import os
 from datetime import date
@@ -75,6 +76,27 @@ NAV_ITEMS = [
 
 def rel(path, root):
     return root + path
+
+
+def empreinte(path):
+    """Somme courte du contenu d'un fichier, ajoutée à son adresse.
+
+    GitHub Pages sert les fichiers avec un cache de dix minutes. Sans cette
+    empreinte, un visiteur déjà venu reçoit le nouveau HTML avec l'ancien CSS
+    et l'ancien script : la page s'affiche à moitié refaite. L'empreinte change
+    dès que le fichier change, donc le navigateur le retélécharge aussitôt.
+    """
+    try:
+        with open(path, "rb") as fichier:
+            return hashlib.sha1(fichier.read()).hexdigest()[:8]
+    except OSError:
+        return ""
+
+
+def rel_v(path, root):
+    """Comme rel(), mais avec l'empreinte du fichier en paramètre d'adresse."""
+    marque = empreinte(path)
+    return rel(path, root) + ("?v=" + marque if marque else "")
 
 
 def a_adresse():
@@ -626,8 +648,8 @@ def layout(path, titre, description, body, root="", schema=""):
       href="{rel('assets/fonts/fraunces-normal-latin.woff2', root)}">
 <link rel="preload" as="font" type="font/woff2" crossorigin
       href="{rel('assets/fonts/archivo-normal-latin.woff2', root)}">
-<link rel="stylesheet" href="{rel('assets/css/fonts.css', root)}">
-<link rel="stylesheet" href="{rel('assets/css/style.css', root)}">
+<link rel="stylesheet" href="{rel_v('assets/css/fonts.css', root)}">
+<link rel="stylesheet" href="{rel_v('assets/css/style.css', root)}">
 {schema}
 </head>
 <body>
@@ -636,7 +658,7 @@ def layout(path, titre, description, body, root="", schema=""):
 {body}
 </main>
 {footer(root)}
-<script src="{rel('assets/js/main.js', root)}" defer></script>
+<script src="{rel_v('assets/js/main.js', root)}" defer></script>
 </body>
 </html>
 """
