@@ -383,6 +383,11 @@ def faq_block(pairs):
 
 
 def form(root, compact=False, fid="contact"):
+    """Formulaire de contact. PLUS APPELÉ depuis le 22/09 : la page contact
+    renvoie vers l'email et l'agenda. Conservé tel quel — le rebrancher
+    demande une seule ligne dans page_contact(), et une adresse de réception
+    dans « form_endpoint ».
+    """
     options = "".join(f'<option value="{e["slug"]}">{e["nav"]}</option>' for e in EXPERTISES)
     inactif = "" if SITE["form_endpoint"] else (
         '<p class="form-warn" role="note"><b>Formulaire non encore raccordé</b>'
@@ -1197,40 +1202,30 @@ def carte_cabinet():
 
 def page_contact():
     body = f"""{page_head("Contact", "Prenons le temps d'analyser votre situation",
-      "Un premier échange pour comprendre votre besoin et identifier l'accompagnement adapté. "
-      "Par téléphone, en visioconférence ou au cabinet.")}
+      "Un premier échange pour comprendre votre besoin et identifier l'accompagnement adapté.")}
 
 {crumb([("Accueil", "index.html"), ("Contact", None)], "")}
 
 <section class="section">
   <div class="container">
-    <div class="grid grid--2" style="gap:clamp(36px,6vw,90px);align-items:start">
-      <div class="reveal">
-        <span class="label label--rule">Nous joindre</span>
-        <h2>{"Trois façons d'échanger" if a_adresse() else "Deux façons d'échanger"}</h2>
-        <div class="stack mt">
-          <div class="note">
-            {icon('mail', 'note__icon')}
-            <h3>Par email</h3>
-            <p>Le plus simple pour exposer une situation et joindre le contexte utile.
-               Réponse sous 24 heures ouvrées.</p>
-            <p class="mt-s">{lien_email("arrow")}</p>
-          </div>
-          <div class="note">
-            {icon('video', 'note__icon')}
-            <h3>En visioconférence</h3>
-            <p>Pratique pour passer en revue des documents ensemble, où que vous soyez.</p>
-          </div>
-          {carte_cabinet()}
-        </div>
+    <div class="section-head reveal">
+      <span class="label label--rule">Nous joindre</span>
+      <h2>{"Trois façons d'échanger" if a_adresse() else "Deux façons d'échanger"}</h2>
+    </div>
+    <div class="grid grid--3 mt">
+      <div class="note reveal">
+        {icon('mail', 'note__icon')}
+        <h3>Par email</h3>
+        <p>Le plus simple pour exposer une situation et joindre le contexte utile.
+           Réponse sous 24 heures ouvrées.</p>
+        <p class="mt-s">{lien_email("arrow")}</p>
       </div>
-      <div class="panel reveal reveal-d2">
-        <span class="panel__label">Formulaire de contact</span>
-        <h2>Décrivez votre situation</h2>
-        <p class="panel__sub">Nous vous répondons sous 24 heures ouvrées. Si votre échéance est
-          proche, réservez directement un créneau.</p>
-        {form("", False, "contact")}
+      <div class="note reveal reveal-d2">
+        {icon('video', 'note__icon')}
+        <h3>En visioconférence</h3>
+        <p>Pratique pour passer en revue des documents ensemble, où que vous soyez.</p>
       </div>
+      {carte_cabinet()}
     </div>
   </div>
 </section>

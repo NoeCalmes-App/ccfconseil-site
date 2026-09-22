@@ -787,9 +787,12 @@ thead th {
 .booking__fallback a { color: var(--brass); }
 
 .booking__widget {
-  height: 660px; min-width: 280px;
+  height: 760px; min-width: 280px;
   border: 1px solid var(--rule); border-top: 0;
 }
+/* En dessous de 760 px, le calendrier affiche une barre de défilement interne.
+   Hauteur mesurée sur le site en ligne, pas estimee. */
+@media (max-width: 640px) { .booking__widget { height: 700px; } }
 .booking__widget iframe { display: block; width: 100%; height: 100%; border: 0; }
 
 .booking__error {
