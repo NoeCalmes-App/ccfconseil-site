@@ -136,25 +136,9 @@ def contact_direct(classe="arrow"):
 # ---------------------------------------------------------------------------
 # Fragments de gabarit
 # ---------------------------------------------------------------------------
-def brand_mark():
-    """Sceau gravé : un écu, une balance stylisée, tracé au filet."""
-    return (
-        '<svg class="brand__mark" viewBox="0 0 34 40" fill="none" aria-hidden="true">'
-        '<path d="M17 1.6 32.2 7v14.4C32.2 30.4 25.4 36.3 17 38.4 8.6 36.3 1.8 30.4 1.8 21.4V7z" '
-        'stroke="#C9A961" stroke-width="1.2"/>'
-        '<path d="M17 10.4v17.2M11.4 27.6h11.2" stroke="#F3F1EB" stroke-width="1.1" stroke-linecap="round"/>'
-        '<path d="M17 13 11.6 14.6l2 4.4a3 3 0 0 0 5.6 0l-2.2-6z" stroke="#F3F1EB" stroke-width="1.1" '
-        'stroke-linejoin="round"/>'
-        '<path d="m17 13 5.4 1.6-2 4.4a3 3 0 0 1-5.6 0" stroke="#F3F1EB" stroke-width="1.1" '
-        'stroke-linejoin="round"/>'
-        '</svg>'
-    )
-
-
 def brand(root, tag=True):
     tagline = f'<span class="brand__tag">{SITE["baseline"]}</span>' if tag else ""
     return f"""<a class="brand" href="{rel('index.html', root)}" aria-label="{SITE['nom']}, accueil">
-      {brand_mark()}
       <span class="brand__text">
         <span class="brand__name">CCF<em>&nbsp;Conseil</em></span>
         {tagline}
@@ -1455,12 +1439,16 @@ def page_404():
 # Fichiers techniques
 # ---------------------------------------------------------------------------
 def favicon():
-    return """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-  <rect width="48" height="48" fill="#0B1B30"/>
-  <path d="M24 7.5 39 13v13.5C39 35 32.4 40.6 24 42.6 15.6 40.6 9 35 9 26.5V13z" fill="none" stroke="#C9A961" stroke-width="1.8"/>
-  <path d="M24 16v16M18 32h12" stroke="#F3F1EB" stroke-width="1.8" stroke-linecap="round"/>
-</svg>
-"""
+    """Monogramme sur fond marine. Pas d'écu : le cabinet est une personne,
+    pas une institution. Police système à empattements — un favicon est rendu
+    sans les polices du site."""
+    return (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">\n'
+        '  <rect width="48" height="48" fill="#0B1B30"/>\n'
+        '  <text x="24" y="34.5" text-anchor="middle" fill="#C9A961"\n'
+        '        font-family="Georgia, \'Times New Roman\', serif" font-size="30">C</text>\n'
+        '</svg>\n'
+    )
 
 
 def security_txt():

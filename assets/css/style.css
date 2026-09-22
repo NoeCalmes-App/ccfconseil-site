@@ -212,8 +212,7 @@ strong { font-weight: 600; color: var(--navy); }
 }
 .site-header.is-scrolled .header-inner { min-height: 66px; }
 
-.brand { display: flex; align-items: center; gap: 15px; text-decoration: none; flex: none; }
-.brand__mark { width: 34px; height: 40px; flex: none; }
+.brand { display: flex; align-items: center; text-decoration: none; flex: none; }
 .brand__text { display: flex; flex-direction: column; line-height: 1; }
 .brand__name {
   font-family: var(--display); font-size: 1.3rem; font-weight: 400;
