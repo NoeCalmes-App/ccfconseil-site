@@ -181,8 +181,29 @@
     return url.toString();
   }
 
+  // Le prestataire annonce la hauteur de chaque ecran par postMessage. Sans
+  // cette ecoute, une hauteur fixe convient au calendrier mais pas au
+  // formulaire de la deuxieme etape, bien plus haut : une barre de defilement
+  // apparait alors a l'interieur du cadre. Mesure relevee : 700 px pour le
+  // calendrier, 1226 px pour le formulaire.
+  function origineLegitime(origine) {
+    return origine === 'https://calendly.com'
+        || /^https:\/\/[a-z0-9-]+\.calendly\.com$/.test(origine);
+  }
+
+  window.addEventListener('message', function (e) {
+    if (typeof e.origin !== 'string' || !origineLegitime(e.origin)) { return; }
+
+    var donnees = e.data;
+    if (!donnees || donnees.event !== 'calendly.page_height' || !donnees.payload) { return; }
+
+    var hauteur = parseInt(donnees.payload.height, 10);
+    if (!hauteur || hauteur < 300) { return; }   // le tout premier message annonce 2px
+    conteneur.style.height = hauteur + 'px';
+  });
+
   function afficherSecours(message) {
-    conteneur.style.minHeight = '0';
+    conteneur.style.height = 'auto';
     conteneur.innerHTML =
       '<div class="booking__error" role="alert">' +
       '<b>Le calendrier n\'a pas pu se charger</b>' +
