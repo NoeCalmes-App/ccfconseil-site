@@ -12,7 +12,7 @@
 
 backend:
   name: github
-  repo: UTILISATEUR/ccfconseil-web        # À REMPLACER
+  repo: noecalms/ccfconseil-web
   branch: main
   commit_messages:
     update: 'Contenu : mise à jour de {{collection}}'
