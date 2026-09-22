@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://noecalms.github.io/ccfconseil-web/sitemap.xml
+Sitemap: https://noecalmes-app.github.io/ccfconseil-site/sitemap.xml

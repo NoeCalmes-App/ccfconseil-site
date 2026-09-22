@@ -9,7 +9,7 @@
 
 set -euo pipefail
 
-DEPOT="${1:-ccfconseil-web}"
+DEPOT="${1:-ccfconseil-site}"
 BRANCHE="main"
 
 bleu()  { printf '\033[1;34m%s\033[0m\n' "$1"; }

@@ -158,7 +158,7 @@ des sauvegardes et une surface d'attaque.
 
 ### Activer l'interface d'administration
 
-1. Renseigner `backend.repo` dans `admin/config.yml` (`utilisateur/ccfconseil-web`).
+1. Renseigner `backend.repo` dans `admin/config.yml` (`NoeCalmes-App/ccfconseil-site`).
 2. Créer une application OAuth GitHub (*Settings → Developer settings → OAuth Apps*).
 3. Déclarer l'URL de rappel selon l'hébergeur retenu :
    - **Cloudflare Pages ou Netlify** : l'authentification est fournie, rien de plus à faire ;

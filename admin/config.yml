@@ -12,15 +12,15 @@
 
 backend:
   name: github
-  repo: noecalms/ccfconseil-web
+  repo: NoeCalmes-App/ccfconseil-site
   branch: main
   commit_messages:
     update: 'Contenu : mise à jour de {{collection}}'
     delete: 'Contenu : suppression dans {{collection}}'
 
 locale: fr
-site_url: https://www.ccf-conseil.fr
-display_url: https://www.ccf-conseil.fr
+site_url: https://noecalmes-app.github.io/ccfconseil-site
+display_url: https://noecalmes-app.github.io/ccfconseil-site
 media_folder: assets/img
 public_folder: /assets/img
 
