@@ -144,17 +144,15 @@
 })();
 
 /* ------------------------------------------------------------------------
-   Agenda en ligne — chargement différé
-   Le script du service de réservation n'est appelé qu'au clic du visiteur :
-   aucun cookie tiers n'est déposé avant son accord explicite.
+   Agenda en ligne
+   Le module du prestataire est chargé avec la page. Si le réseau le refuse,
+   un message de secours remplace le calendrier : la page ne reste jamais vide.
    ------------------------------------------------------------------------ */
 (function () {
   'use strict';
 
-  var bouton = document.getElementById('booking-load');
-  var placeholder = document.getElementById('booking-placeholder');
   var conteneur = document.getElementById('booking-widget');
-  if (!bouton || !conteneur || !placeholder) { return; }
+  if (!conteneur) { return; }
 
   var CALENDLY_JS = 'https://assets.calendly.com/assets/external/widget.js';
   var CALENDLY_CSS = 'https://assets.calendly.com/assets/external/widget.css';
@@ -163,8 +161,8 @@
     // L'URL stockée peut déjà porter des paramètres (hide_event_type_details…).
     // On les conserve et on n'ajoute que ce qui manque : aucun doublon.
     var url;
-    try { url = new URL(bouton.dataset.calendly); }
-    catch (e) { return bouton.dataset.calendly; }
+    try { url = new URL(conteneur.dataset.calendly); }
+    catch (e) { return conteneur.dataset.calendly; }
 
     if (!url.searchParams.has('hide_gdpr_banner')) {
       url.searchParams.set('hide_gdpr_banner', '1');
@@ -177,54 +175,180 @@
     var motif = new URLSearchParams(window.location.search).get('motif');
     if (motif) {
       var libelles = {};
-      try { libelles = JSON.parse(bouton.dataset.motifs || '{}'); } catch (e) { libelles = {}; }
+      try { libelles = JSON.parse(conteneur.dataset.motifs || '{}'); } catch (e) { libelles = {}; }
       if (libelles[motif]) { url.searchParams.set('a1', libelles[motif]); }
     }
     return url.toString();
   }
 
   function afficherSecours(message) {
+    conteneur.style.minHeight = '0';
     conteneur.innerHTML =
       '<div class="booking__error" role="alert">' +
       '<b>Le calendrier n\'a pas pu se charger</b>' +
       '<p>' + message + '</p></div>';
-    conteneur.hidden = false;
   }
 
-  bouton.addEventListener('click', function () {
-    bouton.disabled = true;
-    bouton.textContent = 'Chargement…';
+  var css = document.createElement('link');
+  css.rel = 'stylesheet';
+  css.href = CALENDLY_CSS;
+  document.head.appendChild(css);
 
-    var css = document.createElement('link');
-    css.rel = 'stylesheet';
-    css.href = CALENDLY_CSS;
-    document.head.appendChild(css);
+  var script = document.createElement('script');
+  script.src = CALENDLY_JS;
+  script.async = true;
 
-    var script = document.createElement('script');
-    script.src = CALENDLY_JS;
-    script.async = true;
+  script.onload = function () {
+    if (window.Calendly && typeof window.Calendly.initInlineWidget === 'function') {
+      conteneur.innerHTML = '';
+      window.Calendly.initInlineWidget({
+        url: urlDeReservation(),
+        parentElement: conteneur
+      });
+    } else {
+      afficherSecours('Écrivez-nous ou appelez-nous : nous fixons le créneau ensemble.');
+    }
+  };
 
-    script.onload = function () {
-      placeholder.hidden = true;
-      conteneur.hidden = false;
-      if (window.Calendly && typeof window.Calendly.initInlineWidget === 'function') {
-        window.Calendly.initInlineWidget({
-          url: urlDeReservation(),
-          parentElement: conteneur
-        });
+  script.onerror = function () {
+    afficherSecours(
+      'Vérifiez votre connexion, ou appelez-nous directement : nous fixons le créneau ensemble.'
+    );
+  };
+
+  document.head.appendChild(script);
+})();
+
+
+/* ------------------------------------------------------------------------
+   Liens courriel
+   Un clic sur une adresse ouvre la messagerie du visiteur, par « mailto: ».
+   Sur téléphone et tablette, le système ouvre toujours quelque chose : on ne
+   touche à rien. Sur ordinateur, quand aucune messagerie n'est installée, le
+   navigateur ne fait rien du tout et le visiteur croit le lien cassé. On le
+   détecte — la page garde le focus — et on propose alors Gmail, Outlook,
+   Yahoo, ou la copie de l'adresse.
+   ------------------------------------------------------------------------ */
+(function () {
+  'use strict';
+
+  if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) { return; }
+
+  var DELAI = 1200;        // temps laissé au système pour ouvrir la messagerie
+  var panneau = null;
+  var declencheur = null;
+
+  function composeurs(adresse) {
+    var a = encodeURIComponent(adresse);
+    return [
+      { nom: 'Gmail',      url: 'https://mail.google.com/mail/?view=cm&fs=1&to=' + a },
+      { nom: 'Outlook',    url: 'https://outlook.live.com/mail/0/deeplink/compose?to=' + a },
+      { nom: 'Yahoo Mail', url: 'https://compose.mail.yahoo.com/?to=' + a }
+    ];
+  }
+
+  function surTouche(e) {
+    if (e.key === 'Escape' || e.key === 'Esc') { fermer(); }
+  }
+
+  function fermer() {
+    if (!panneau) { return; }
+    panneau.parentNode.removeChild(panneau);
+    panneau = null;
+    document.removeEventListener('keydown', surTouche);
+    if (declencheur) { declencheur.focus(); }
+  }
+
+  function bouton(classe, texte) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = classe;
+    b.textContent = texte;
+    return b;
+  }
+
+  function ouvrir(adresse) {
+    fermer();
+
+    panneau = document.createElement('div');
+    panneau.className = 'courriel';
+    panneau.setAttribute('role', 'dialog');
+    panneau.setAttribute('aria-modal', 'true');
+    panneau.setAttribute('aria-label', 'Écrire à ' + adresse);
+
+    var boite = document.createElement('div');
+    boite.className = 'courriel__boite';
+
+    var titre = document.createElement('p');
+    titre.className = 'courriel__titre';
+    titre.textContent = 'Écrire à ' + adresse;
+    boite.appendChild(titre);
+
+    var texte = document.createElement('p');
+    texte.className = 'courriel__texte';
+    texte.textContent = "Aucune messagerie ne s'est ouverte sur cet ordinateur. "
+      + 'Choisissez la vôtre, ou copiez l\'adresse.';
+    boite.appendChild(texte);
+
+    var liste = document.createElement('div');
+    liste.className = 'courriel__liste';
+    composeurs(adresse).forEach(function (c) {
+      var lien = document.createElement('a');
+      lien.className = 'btn btn--outline';
+      lien.href = c.url;
+      lien.target = '_blank';
+      lien.rel = 'noopener noreferrer';
+      lien.textContent = c.nom;
+      lien.addEventListener('click', fermer);
+      liste.appendChild(lien);
+    });
+    boite.appendChild(liste);
+
+    var copier = bouton('courriel__copier', "Copier l'adresse");
+    copier.addEventListener('click', function () {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(adresse).then(
+          function () { copier.textContent = 'Adresse copiée'; },
+          function () { copier.textContent = adresse; }
+        );
       } else {
-        afficherSecours('Appelez-nous directement, nous fixons le créneau ensemble.');
+        copier.textContent = adresse;
       }
-    };
+    });
+    boite.appendChild(copier);
 
-    script.onerror = function () {
-      bouton.disabled = false;
-      bouton.textContent = 'Réessayer';
-      afficherSecours(
-        'Vérifiez votre connexion, ou appelez-nous directement : nous fixons le créneau ensemble.'
-      );
-    };
+    var fermeture = bouton('courriel__fermer', '\u00D7');
+    fermeture.setAttribute('aria-label', 'Fermer');
+    fermeture.addEventListener('click', fermer);
+    boite.appendChild(fermeture);
 
-    document.head.appendChild(script);
+    panneau.appendChild(boite);
+    panneau.addEventListener('click', function (e) {
+      if (e.target === panneau) { fermer(); }
+    });
+
+    document.body.appendChild(panneau);
+    document.addEventListener('keydown', surTouche);
+    fermeture.focus();
+  }
+
+  document.addEventListener('click', function (e) {
+    var cible = e.target;
+    if (!cible || typeof cible.closest !== 'function') { return; }
+
+    var lien = cible.closest('a[href^="mailto:"]');
+    if (!lien) { return; }
+
+    var adresse = lien.getAttribute('href').slice(7).split('?')[0];
+    try { adresse = decodeURIComponent(adresse); } catch (err) { /* adresse brute */ }
+    if (!adresse) { return; }
+
+    declencheur = lien;
+
+    // On laisse le navigateur tenter l'ouverture normale, puis on vérifie :
+    // si la page n'a jamais perdu le focus, c'est que rien ne s'est ouvert.
+    window.setTimeout(function () {
+      if (document.hasFocus() && !document.hidden) { ouvrir(adresse); }
+    }, DELAI);
   });
 })();

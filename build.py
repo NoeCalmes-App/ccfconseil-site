@@ -12,6 +12,7 @@ Le texte éditorial (expertises, procédure) est dans content.py.
 Les coordonnées du cabinet sont dans le dictionnaire SITE ci-dessous.
 """
 
+import html
 import os
 from datetime import date
 
@@ -452,30 +453,30 @@ def motifs_json():
 
 
 def calendly_embed():
-    """Widget de réservation, chargé uniquement après action explicite du visiteur.
+    """Widget de réservation, chargé en même temps que la page.
 
-    Aucun script tiers n'est appelé tant que le visiteur n'a pas cliqué : pas de
-    cookie déposé à l'insu de l'utilisateur, donc pas de bandeau de consentement.
+    Le module du prestataire est appelé dès l'ouverture de la page : il peut
+    déposer ses cookies sans action préalable du visiteur. La page
+    « Confidentialité » l'indique explicitement.
     """
     return f"""<div class="booking" id="reservation">
-      <div class="booking__placeholder" id="booking-placeholder">
+      <div class="booking__intro">
         <span class="panel__label">Agenda en ligne</span>
-        <h2 class="index__titre">Afficher les créneaux disponibles</h2>
+        <h2 class="index__titre">Choisissez votre créneau</h2>
         <p>
-          Le calendrier est fourni par un service externe. Il n'est chargé qu'après votre
-          accord : aucun cookie n'est déposé tant que vous n'avez pas cliqué.
-        </p>
-        <button class="btn btn--primary" type="button" id="booking-load"
-                data-calendly="{SITE['calendly']}"
-                data-motifs='{motifs_json()}'>
-          {icon('calendar')} Afficher le calendrier
-        </button>
-        <p class="booking__fallback">
-          Vous préférez ne pas passer par l'agenda&nbsp;? Écrivez-nous à
-          <a href="mailto:{SITE['email']}">{SITE['email']}</a>, nous fixons le créneau ensemble.
+          Sélectionnez le jour et l'heure qui vous conviennent : la confirmation
+          vous parvient aussitôt par courriel.
         </p>
       </div>
-      <div class="booking__widget" id="booking-widget" hidden></div>
+      <div class="booking__widget" id="booking-widget"
+           data-calendly="{html.escape(SITE['calendly'], quote=True)}"
+           data-motifs='{motifs_json()}'>
+        <p class="booking__loading">Chargement du calendrier&#8230;</p>
+      </div>
+      <p class="booking__fallback">
+        Vous préférez ne pas passer par l'agenda&nbsp;? Écrivez-nous à
+        <a href="mailto:{SITE['email']}">{SITE['email']}</a>, nous fixons le créneau ensemble.
+      </p>
     </div>"""
 
 
@@ -1376,12 +1377,13 @@ réclamation auprès de la CNIL — <a href="https://www.cnil.fr" rel="noopener"
 
 <h2>Cookies et service de réservation</h2>
 <p>Ce site ne dépose aucun cookie de mesure d'audience ni de publicité, et n'utilise aucun
-traceur publicitaire. Aucune bannière de consentement n'est donc affichée.</p>
-<p>La prise de rendez-vous en ligne repose sur un service externe. Son module n'est
-<strong>chargé qu'après une action explicite de votre part</strong> : tant que vous n'avez pas
-cliqué sur « Afficher le calendrier », aucun script tiers n'est appelé et aucun cookie n'est
-déposé. Si vous préférez ne pas y recourir, le téléphone, le courriel et le formulaire de
-contact restent à votre disposition.</p>
+traceur publicitaire.</p>
+<p>La prise de rendez-vous en ligne repose sur un service externe. Son module est
+<strong>chargé en même temps que la page « Rendez-vous »</strong> : dès son ouverture, ce
+prestataire reçoit votre adresse IP et peut déposer les cookies nécessaires à son
+fonctionnement. Les autres pages du site n'appellent aucun script tiers. Si vous préférez ne
+pas y recourir, le téléphone, le courriel et le formulaire de contact restent à votre
+disposition.</p>
 <p>Lorsque vous choisissez d'afficher le calendrier, les données que vous saisissez pour
 réserver (nom, adresse email, téléphone, motif) sont traitées par ce prestataire agissant en
 qualité de sous-traitant au sens de l'article 28 du RGPD, aux seules fins d'organiser le
